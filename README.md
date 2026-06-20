@@ -1,15 +1,13 @@
-# XPREAY
+# XPREAY - publikacja Risk Lab 2026-06-20
 
-Statyczna strona pod GitHub Pages dla `xpreay.com`.
+Etapowa paczka GitHub Pages zawierajaca pelna strone XPREAY oraz najnowszy Risk Lab.
 
-## Struktura
+## Zawartosc
 
-- `index.html` - strona glowna XPREAY.
-- `sessions.html` - mapa sesji handlowych, SMC, oficjalnych sesji i biblioteka godzin.
-- `assets/` - logo, grafiki i materialy strony.
+- `index.html` - strona glowna z wejsciem do Risk Lab.
+- `sessions.html` - mapa sesji handlowych.
+- `risk-lab.html` + `risk-lab.js` - najnowszy Risk Lab / Monte Carlo.
+- `assets/` - komplet wymaganych obrazow, ikon, logo i lokalny Three.js.
+- `CNAME`, `.nojekyll`, `robots.txt`, `sitemap.xml` - konfiguracja GitHub Pages.
 
-## Publikacja
-
-Ustaw GitHub Pages na `Deploy from a branch`, branch `main`, folder `/root`.
-
-Docelowo strona moze dzialac pod domena `xpreay.com`, a narzedzia jako osobne podstrony.
+Ta paczka celowo nie zawiera COT Reportu. Instrukcja publikacji znajduje sie w `GITHUB-INSTRUKCJA-RISK-LAB.md`.

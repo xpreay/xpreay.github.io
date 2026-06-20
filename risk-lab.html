@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="pl" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>XPREAY Risk Lab - interaktywny symulator zarządzania ryzykiem</title>
+  <meta name="description" content="Interaktywne laboratorium zarządzania ryzykiem. Symuluj setki alternatywnych krzywych kapitału i sprawdź wpływ skuteczności, RR, ryzyka oraz zarządzania pozycją." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://xpreay.com/risk-lab.html" />
+  <link rel="icon" href="assets/favicon-32x32.png" sizes="32x32" type="image/png" />
+  <link rel="icon" href="assets/favicon-192x192.png" sizes="192x192" type="image/png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="XPREAY Trading" />
+  <meta property="og:title" content="XPREAY Risk Lab" />
+  <meta property="og:description" content="Zobacz konsekwencje swoich zasad, zanim zapłacisz za nie prawdziwym kapitałem." />
+  <meta property="og:url" content="https://xpreay.com/risk-lab.html" />
+  <meta property="og:image" content="https://xpreay.com/assets/favicon-192x192.png" />
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #101318;
+      --muted: #606773;
+      --line: #d8d9de;
+      --panel: rgba(255,255,255,.82);
+      --panel-solid: #fff;
+      --paper: #f5f6f8;
+      --soft: #e9ebf0;
+      --blue: #638dff;
+      --purple: #b27cff;
+      --red: #f05a54;
+      --green: #31d1a0;
+      --gold: #f6c665;
+      --shadow: 0 22px 70px rgba(20,28,45,.12);
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    [data-theme="dark"] {
+      color-scheme: dark;
+      --ink: #f4f1e8;
+      --muted: #b9b4aa;
+      --line: #373a42;
+      --panel: rgba(20,22,27,.84);
+      --panel-solid: #15171b;
+      --paper: #0e1013;
+      --soft: #20232a;
+      --shadow: 0 30px 90px rgba(0,0,0,.4);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; overflow-x: clip; }
+    body {
+      margin: 0;
+      padding-top: 104px;
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: clip;
+      font-family: var(--font);
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 5%, rgba(240,90,84,.12), transparent 28%),
+        radial-gradient(circle at 88% 8%, rgba(99,141,255,.14), transparent 31%),
+        var(--paper);
+    }
+    a { color: inherit; text-decoration: none; }
+    [hidden] { display: none !important; }
+    button, input, select { max-width: 100%; min-width: 0; font: inherit; }
+    button { cursor: pointer; }
+    .partner-strip {
+      position: fixed; inset: 0 0 auto; z-index: 60; height: 38px;
+      display: flex; align-items: center; justify-content: center;
+      background: #030303; border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .partner-strip img { width: 118px; max-height: 24px; object-fit: contain; }
+    .page-menu {
+      position: fixed; inset: 38px 0 auto; z-index: 55; height: 66px;
+      display: flex; align-items: center; gap: 24px; padding: 0 max(24px, calc((100vw - 1280px)/2));
+      background: color-mix(in srgb, var(--paper) 82%, transparent);
+      border-bottom: 1px solid var(--line); backdrop-filter: blur(18px);
+    }
+    .brand-link { display: flex; width: 44px; height: 34px; align-items: center; }
+    .brand-logo { width: 38px; max-height: 30px; object-fit: contain; }
+    [data-theme="dark"] .brand-logo.black, :root:not([data-theme="dark"]) .brand-logo.white { display: none; }
+    .nav-links { display: flex; align-items: center; gap: 4px; width: 100%; }
+    .nav-links a, .theme-nav {
+      border: 1px solid transparent; background: transparent; color: var(--ink);
+      padding: 10px 12px; font-size: 13px; font-weight: 750;
+    }
+    .nav-links a:hover, .nav-links a[aria-current="page"], .theme-nav:hover {
+      background: color-mix(in srgb, var(--soft) 75%, transparent); border-color: var(--line);
+    }
+    .theme-nav { margin-left: auto; }
+    .menu-toggle { display: none; margin-left: auto; width: 44px; height: 40px; background: var(--soft); border: 1px solid var(--line); }
+    .menu-toggle span { display: block; width: 20px; height: 2px; margin: 4px auto; background: var(--ink); }
+    .shell { width: calc(100% - 40px); max-width: 1500px; min-width: 0; margin: 0 auto; padding: 34px 0 80px; }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px;
+      color: var(--muted); font-size: 12px; font-weight: 850; letter-spacing: .16em; text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(135deg, var(--green), var(--blue)); box-shadow: 0 0 18px var(--blue); }
+    h1, h2, h3, p { margin-top: 0; }
+    .hero {
+      position: relative; overflow: hidden; min-height: 410px; padding: clamp(34px, 6vw, 84px);
+      min-width: 0;
+      border: 1px solid var(--line); background:
+        linear-gradient(110deg, rgba(7,9,13,.96) 0%, rgba(12,15,23,.88) 53%, rgba(29,38,69,.72) 100%);
+      color: #f6f3eb; box-shadow: var(--shadow);
+    }
+    .hero::before {
+      content: ""; position: absolute; inset: 0; opacity: .22; pointer-events: none;
+      background-image: linear-gradient(rgba(255,255,255,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.12) 1px, transparent 1px);
+      background-size: 44px 44px;
+    }
+    .hero::after {
+      content: ""; position: absolute; inset: auto 0 0; height: 4px;
+      background: linear-gradient(90deg, var(--red), var(--blue), var(--purple), var(--gold));
+    }
+    .hero-copy { position: relative; z-index: 2; width: 100%; max-width: 780px; min-width: 0; }
+    .hero h1 { max-width: 850px; margin-bottom: 22px; font-size: clamp(48px, 7vw, 104px); line-height: .96; letter-spacing: 0; }
+    .gradient-text { color: transparent; background: linear-gradient(90deg, #fff, #91b2ff, #d59bff, #ff7770); background-clip: text; }
+    .hero p { max-width: 680px; overflow-wrap: anywhere; color: #cbc8c1; font-size: clamp(16px, 1.5vw, 21px); line-height: 1.65; }
+    .hero-hook { margin-top: 30px; padding-left: 18px; border-left: 3px solid var(--blue); font-weight: 750; color: #fff !important; }
+    .lab-grid { display: grid; grid-template-columns: 1fr; gap: 20px; min-width: 0; margin-top: 28px; align-items: start; }
+    .workspace, .panel { min-width: 0; }
+    .panel { border: 1px solid var(--line); background: var(--panel); box-shadow: var(--shadow); }
+    .controls { position: static; padding: 28px; }
+    .controls-heading { display: grid; grid-template-columns: minmax(260px,.65fr) minmax(0,1.35fr); align-items: end; gap: 8px 32px; margin-bottom: 26px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+    .controls-heading .eyebrow { grid-column: 1/-1; margin-bottom: 0; }
+    .controls-heading p { max-width: 680px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.55; }
+    .panel-title { margin: 0; font-size: clamp(28px,3vw,40px); line-height: 1.05; }
+    .controls-inner { display: grid; grid-template-columns: minmax(240px,.65fr) minmax(0,1.35fr); gap: 24px 32px; }
+    .setup-block { min-width: 0; }
+    .account-setup { grid-column: 1/-1; }
+    .setup-label { display: block; margin-bottom: 11px; color: var(--muted); font-size: 14px; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+    .mode-switch { display: inline-grid; grid-template-columns: repeat(2,minmax(150px,190px)); gap: 6px; margin: 0; padding: 4px; border: 1px solid var(--line); background: var(--soft); }
+    .mode-switch .chip { min-height: 42px; padding: 9px 18px; font-size: 13px; }
+    .core-controls { grid-column: 1/-1; display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 12px; padding-top: 24px; border-top: 1px solid var(--line); }
+    .mode-panel { display: none; }
+    .mode-panel.is-visible { display: grid; }
+    .subsection-label { grid-column: 1/-1; display: block; margin: 0; color: var(--ink); font-size: 14px; font-weight: 850; letter-spacing: .09em; text-transform: uppercase; }
+    #propControls { grid-column: 1/-1; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; padding: 22px; border: 1px solid var(--line); background: var(--soft); }
+    .challenge-preset { grid-column: 1/-1; padding: 16px; border: 1px solid var(--line); background: var(--panel-solid); }
+    .challenge-preset select { max-width: 560px; }
+    .prop-disclaimer { grid-column: 1/-1; margin: 4px 0 0; padding: 12px 14px; border: 1px solid var(--line); color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .simulation-status { grid-column: 1/-1; display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 14px 16px; border: 1px solid var(--line); background: var(--soft); }
+    .simulation-scope { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; text-align: right; }
+    .chip, .view-button {
+      border: 1px solid var(--line); background: var(--panel-solid); color: var(--ink);
+      padding: 11px 13px; font-size: 13px; font-weight: 800;
+    }
+    .chip { transition: border-color .18s ease, background .18s ease, color .18s ease; }
+    .chip:hover { border-color: color-mix(in srgb,var(--blue) 65%,var(--line)); background: color-mix(in srgb,var(--panel-solid) 84%,var(--blue)); }
+    .chip.active { color: #101318; border-color: transparent; background: linear-gradient(120deg, #e7efff, #ae94ff, #ff6b60); box-shadow: 0 8px 24px rgba(99,141,255,.16); }
+    .control-group { display: block; min-width: 0; margin: 0; padding: 18px; border: 1px solid var(--line); background: var(--panel-solid); transition: border-color .18s ease, background .18s ease; }
+    .control-group:focus-within { border-color: color-mix(in srgb,var(--blue) 72%,var(--line)); background: color-mix(in srgb,var(--panel-solid) 96%,var(--blue)); }
+    .control-head { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 14px; color: var(--muted); font-size: 12px; font-weight: 850; text-transform: uppercase; letter-spacing: .075em; }
+    .control-value { color: var(--ink); font-size: 17px; letter-spacing: 0; }
+    .has-range-editor .control-value { display: none; }
+    .range-editor { display: grid; grid-template-columns: minmax(90px,1fr) 104px; align-items: center; gap: 14px; min-height: 42px; }
+    input[type="range"] { width: 100%; height: 20px; margin: 0; appearance: none; background: transparent; cursor: pointer; }
+    input[type="range"]::-webkit-slider-runnable-track { height: 4px; border-radius: 99px; background: linear-gradient(90deg,var(--blue),var(--purple)); }
+    input[type="range"]::-webkit-slider-thumb { width: 18px; height: 18px; margin-top: -7px; appearance: none; border: 3px solid var(--panel-solid); border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 1px var(--blue),0 4px 12px rgba(99,141,255,.35); }
+    input[type="range"]::-moz-range-track { height: 4px; border: 0; border-radius: 99px; background: linear-gradient(90deg,var(--blue),var(--purple)); }
+    input[type="range"]::-moz-range-thumb { width: 14px; height: 14px; border: 3px solid var(--panel-solid); border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 1px var(--blue),0 4px 12px rgba(99,141,255,.35); }
+    .number-shell { display: flex; align-items: center; min-width: 0; min-height: 42px; border: 1px solid var(--line); background: var(--paper); transition: border-color .18s ease, box-shadow .18s ease; }
+    .number-shell:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px color-mix(in srgb,var(--blue) 18%,transparent); }
+    .number-shell input { width: 100%; min-width: 0; padding: 9px 4px 9px 11px; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 14px; font-weight: 800; font-variant-numeric: tabular-nums; }
+    .number-shell span { flex: 0 0 auto; padding: 0 10px 0 4px; color: var(--muted); font-size: 11px; font-weight: 850; letter-spacing: .05em; text-transform: uppercase; }
+    .number-shell input::-webkit-inner-spin-button { opacity: .5; }
+    select, .number-input {
+      width: 100%; min-height: 46px; padding: 11px 12px; color: var(--ink); border: 1px solid var(--line); background: var(--paper); font-size: 14px;
+    }
+    select:focus, .number-input:focus { border-color: var(--blue); outline: 3px solid color-mix(in srgb,var(--blue) 18%,transparent); }
+    .capital-shell { max-width: 280px; }
+    .capital-shell .number-input { min-height: 42px; padding: 9px 4px 9px 11px; border: 0; outline: 0; background: transparent; font-weight: 800; }
+    .fixed-risk-control .number-shell { max-width: 180px; }
+    .fixed-risk-control .field-help { margin-top: 9px; }
+    .risk-message { display: block; min-height: 50px; margin: 12px 0 0; padding: 11px 12px; border-left: 3px solid var(--green); background: var(--soft); color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .field-help { display: block; margin-top: 9px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .conditional-controls { display: none; margin-top: 12px; padding: 12px; border: 1px solid var(--line); background: var(--soft); }
+    .conditional-controls.is-visible { display: grid; gap: 13px; }
+    .conditional-controls .control-group { margin-top: 0; }
+    .inline-check { display: flex; align-items: flex-start; gap: 9px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .inline-check input { flex: 0 0 auto; width: 16px; height: 16px; margin-top: 1px; accent-color: var(--blue); }
+    .trading-days-option { margin-top: 12px; padding-top: 11px; border-top: 1px solid var(--line); }
+    .trading-days-option .inline-check { color: var(--ink); font-size: 13px; font-weight: 750; }
+    .trading-days-option .inline-check + .inline-check { margin-top: 9px; }
+    .trading-days-option .field-help { margin: 6px 0 0 25px; }
+    .time-policy-field { display: block; margin-bottom: 11px; }
+    .time-policy-field > span { display: block; margin-bottom: 7px; color: var(--muted); font-size: 11px; font-weight: 850; letter-spacing: .07em; text-transform: uppercase; }
+    .time-policy-field select { min-height: 42px; }
+    .live-note { display: flex; align-items: center; gap: 12px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .live-note strong { color: var(--ink); font-size: 14px; }
+    .live-note strong::before { content: ""; display: inline-block; width: 9px; height: 9px; margin-right: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 14px var(--green); }
+    .workspace { min-width: 0; }
+    .view-controls { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 12px; padding: 14px 16px; }
+    .view-mode, .view-options { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .view-mode .control-head { margin: 0 4px 0 0; }
+    .view-button:hover { border-color: var(--blue); }
+    .view-option { display: inline-flex; align-items: center; gap: 8px; padding: 10px 12px; border: 1px solid var(--line); background: var(--panel-solid); color: var(--muted); font-size: 12px; font-weight: 800; }
+    .view-option input { accent-color: var(--blue); }
+    .scene-panel { position: relative; height: min(65vh, 660px); min-height: 500px; overflow: hidden; background: #080b10; border: 1px solid var(--line); box-shadow: var(--shadow); }
+    #equityCanvas { display: block; width: 100%; height: 100%; touch-action: none; }
+    .scene-top {
+      position: absolute; inset: 16px 16px auto; z-index: 3; display: flex; gap: 8px; justify-content: space-between; pointer-events: none;
+    }
+    .scene-label { padding: 9px 11px; background: rgba(8,10,14,.76); border: 1px solid rgba(255,255,255,.16); color: #eee; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; backdrop-filter: blur(10px); }
+    .scene-fullscreen { flex: 0 0 auto; pointer-events: auto; border-color: rgba(255,255,255,.22); background: rgba(8,10,14,.82); color: #fff; backdrop-filter: blur(10px); }
+    .scene-fullscreen[hidden] { display: none; }
+    .scene-outcome-summary { position: absolute; top: 62px; left: 16px; z-index: 4; padding: 10px 12px; border: 1px solid rgba(255,255,255,.18); background: rgba(8,10,14,.84); color: #eee; font-size: 12px; font-weight: 800; backdrop-filter: blur(10px); }
+    .scene-outcome-summary[hidden] { display: none; }
+    body.risk-focus-open { overflow: hidden; }
+    .scene-panel.is-focus-mode { position: fixed; inset: 0; z-index: 1000; width: 100vw; height: 100dvh; max-width: none; min-height: 100dvh; border: 0; }
+    .scene-panel.is-focus-mode #equityCanvas { width: calc(100% - 410px); margin-left: 410px; transition: width .25s ease, margin-left .25s ease; }
+    .scene-panel.is-focus-mode.controls-collapsed #equityCanvas { width: 100%; margin-left: 0; }
+    .scene-panel.is-focus-mode > .controls {
+      position: absolute; inset: 16px auto 16px 16px; z-index: 7; width: 378px; padding: 18px;
+      overflow: auto; background: color-mix(in srgb,var(--panel-solid) 96%,transparent); backdrop-filter: blur(18px);
+      transition: transform .25s ease, opacity .2s ease;
+    }
+    .scene-panel.is-focus-mode.controls-collapsed > .controls { transform: translateX(calc(-100% - 30px)); opacity: 0; pointer-events: none; }
+    .scene-panel.is-focus-mode .controls-heading { display: block; margin-bottom: 16px; padding: 42px 0 14px; }
+    .scene-panel.is-focus-mode .controls-heading .eyebrow, .scene-panel.is-focus-mode .controls-heading p { display: none; }
+    .scene-panel.is-focus-mode .panel-title { font-size: 25px; }
+    .scene-panel.is-focus-mode .controls-inner { display: block; }
+    .scene-panel.is-focus-mode .setup-block, .scene-panel.is-focus-mode .core-controls, .scene-panel.is-focus-mode #propControls { margin-top: 18px; }
+    .scene-panel.is-focus-mode .core-controls { display: grid; grid-template-columns: 1fr; gap: 10px; padding-top: 18px; }
+    .scene-panel.is-focus-mode .core-controls > .control-group:last-child { grid-column: auto; }
+    .scene-panel.is-focus-mode #propControls { grid-template-columns: 1fr; padding: 14px; }
+    .scene-panel.is-focus-mode #propControls > * { grid-column: 1; }
+    .scene-panel.is-focus-mode .simulation-status { display: none; }
+    .focus-controls-toggle { display: none; position: absolute; top: 30px; left: 34px; z-index: 9; pointer-events: auto; background: linear-gradient(120deg,#e7efff,#ae94ff,#ff6b60); color: #101318; border: 0; }
+    .scene-panel.is-focus-mode .focus-controls-toggle { display: block; }
+    .scene-panel.is-focus-mode.controls-collapsed .focus-controls-toggle { left: 16px; }
+    .scene-panel.is-focus-mode .scene-top { left: 426px; display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: start; transition: left .25s ease; }
+    .scene-panel.is-focus-mode .scene-top .scene-label { min-width: 0; white-space: nowrap; }
+    .scene-panel.is-focus-mode:not(.controls-collapsed) #sceneInstruction { display: none; }
+    .scene-panel.is-focus-mode.controls-collapsed .scene-top { left: 170px; grid-template-columns: minmax(250px,1fr) auto auto; }
+    .scene-panel.is-focus-mode.controls-collapsed #sceneInstruction { display: block; }
+    .scene-panel.is-focus-mode .scene-outcome-summary { left: 426px; }
+    .scene-panel.is-focus-mode.controls-collapsed .scene-outcome-summary { top: 78px; left: 16px; }
+    .scene-panel.is-focus-mode .selected-path-card { right: 24px; bottom: 76px; }
+    .scene-panel.is-focus-mode .legend { left: 426px; right: 360px; }
+    .scene-panel.is-focus-mode.controls-collapsed .legend { left: 16px; }
+    .legend { position: absolute; inset: auto 16px 16px; z-index: 3; display: flex; flex-wrap: wrap; gap: 8px; pointer-events: none; }
+    .legend span { padding: 7px 9px; background: rgba(8,10,14,.76); border: 1px solid rgba(255,255,255,.14); color: #ddd; font-size: 11px; }
+    .dot { display: inline-block; width: 8px; height: 8px; margin-right: 6px; border-radius: 50%; }
+    .selected-path-card {
+      position: absolute; right: 16px; bottom: 58px; z-index: 3; width: min(280px, calc(100% - 32px)); padding: 14px;
+      border: 1px solid rgba(246,198,101,.42); background: rgba(8,10,14,.84); color: #eee; backdrop-filter: blur(12px);
+      pointer-events: none;
+    }
+    .selected-path-card > span { display: block; color: #f6c665; font-size: 11px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+    .selected-path-card > strong { display: block; margin: 6px 0 12px; font-size: 19px; }
+    .selected-path-row { display: flex; justify-content: space-between; gap: 14px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.12); color: #aaa; font-size: 12px; }
+    .selected-path-row[hidden] { display: none; }
+    .selected-path-row + .selected-path-row { margin-top: 7px; }
+    .selected-path-row b { color: #fff; text-align: right; }
+    .metrics { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 12px; margin-top: 24px; border: 0; background: transparent; }
+    .metrics.prop-metrics { grid-template-columns: repeat(4,minmax(0,1fr)); }
+    .metrics-heading {
+      grid-column: 1/-1; display: flex; align-items: end; justify-content: space-between; gap: 28px;
+      margin-bottom: 4px; padding: 4px 2px 16px; border-bottom: 1px solid var(--line);
+    }
+    .metrics-heading .eyebrow { margin-bottom: 7px; }
+    .metrics-heading h2 { margin: 0; font-size: clamp(24px,2.5vw,34px); line-height: 1; }
+    .metrics-heading p { max-width: 510px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; text-align: right; }
+    .metric {
+      position: relative; grid-column: span 2; min-width: 0; min-height: 136px; padding: 22px;
+      border: 1px solid var(--line); background: linear-gradient(145deg,var(--panel),color-mix(in srgb,var(--panel) 92%,var(--blue)));
+      overflow: hidden; transition: border-color .2s ease, transform .2s ease;
+    }
+    .metric::after { content: ""; position: absolute; inset: 0 0 auto; height: 2px; background: var(--metric-accent,var(--blue)); opacity: .7; }
+    .metric:hover { transform: translateY(-2px); border-color: color-mix(in srgb,var(--metric-accent,var(--blue)) 45%,var(--line)); }
+    .metric-wide { grid-column: span 3; }
+    .prop-metrics .metric { grid-column: auto; }
+    .prop-metrics .metric-wide { grid-column: span 2; }
+    .metric-featured { background: linear-gradient(145deg,color-mix(in srgb,var(--panel) 90%,var(--metric-accent,var(--blue))),var(--panel)); }
+    .metric-pass { --metric-accent: #31d1a0; }
+    .metric-fail { --metric-accent: #f05a54; }
+    .metric-active { --metric-accent: #9a8cff; }
+    .metric-time { --metric-accent: #f6c665; }
+    .metric span { display: block; margin-bottom: 14px; color: var(--muted); font-size: 11px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+    .metric strong { display: block; margin-bottom: 7px; font-size: clamp(25px,2.15vw,34px); line-height: 1.08; overflow-wrap: normal; }
+    .metric-time strong { font-size: clamp(24px,2vw,31px); }
+    .metric small { color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .metric-breakdown { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; margin-top: 16px; }
+    .metric-breakdown.two-values { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .metric-breakdown > div { min-width: 0; padding: 0 16px; border-left: 1px solid var(--line); }
+    .metric-breakdown > div:first-child { padding-left: 0; border-left: 0; }
+    .metric-breakdown > div:last-child { padding-right: 0; }
+    .metric-breakdown small { display: block; margin-bottom: 7px; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+    .metric-breakdown strong { margin: 0; font-size: clamp(20px,2vw,28px); white-space: nowrap; }
+    .lesson-grid { display: grid; grid-template-columns: 1.1fr .9fr; gap: 18px; margin-top: 18px; }
+    .lesson { padding: 24px; }
+    .lesson h2 { font-size: clamp(26px, 3vw, 42px); }
+    .lesson p { color: var(--muted); line-height: 1.65; }
+    .distribution { display: flex; align-items: end; gap: 4px; height: 150px; margin-top: 22px; border-bottom: 1px solid var(--line); }
+    .bar { flex: 1; min-width: 4px; background: linear-gradient(180deg, var(--purple), var(--blue)); opacity: .75; }
+    .compare-grid { display: grid; gap: 8px; margin-top: 18px; }
+    .compare-row { display: grid; grid-template-columns: 110px 1fr 68px; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .track { height: 10px; background: var(--soft); border: 1px solid var(--line); overflow: hidden; }
+    .fill { height: 100%; background: linear-gradient(90deg, var(--blue), var(--purple), var(--red)); }
+    .section-head { margin: 64px 0 22px; padding-bottom: 22px; border-bottom: 1px solid var(--line); }
+    .section-head h2 { margin-bottom: 10px; font-size: clamp(30px, 4vw, 54px); }
+    .section-head p { max-width: 750px; color: var(--muted); line-height: 1.6; }
+    .education-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+    .education-card { padding: 20px; border: 1px solid var(--line); background: var(--panel); }
+    .education-card strong { display: block; margin-bottom: 8px; font-size: 18px; }
+    .education-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .metric-set[hidden] { display: none; }
+    .plane-tag { display: inline-flex; align-items: center; gap: 6px; }
+    .prop-explainer { margin-top: 14px; padding: 12px; border-left: 3px solid var(--purple); background: var(--soft); color: var(--muted); font-size: 11px; line-height: 1.55; }
+    .footer-note { margin-top: 54px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: 11px; }
+    @media (max-width: 1100px) {
+      .controls-inner { grid-template-columns: 1fr; }
+      .core-controls { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .metrics { grid-template-columns: repeat(2,1fr); }
+      .metric, .metric-wide { grid-column: auto; }
+      .prop-metrics .metric-wide { grid-column: auto; }
+      .metrics.prop-metrics { grid-template-columns: repeat(2,1fr); }
+      .metrics-heading { display: block; }
+      .metrics-heading p { margin-top: 10px; max-width: 680px; text-align: left; }
+      .education-cards { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 1250px) {
+      .scene-panel.is-focus-mode .scene-top { grid-template-columns: minmax(220px,1fr) auto; }
+      .scene-panel.is-focus-mode #sceneInstruction { display: none; }
+    }
+    @media (max-width: 760px) {
+      body { padding-top: 96px; }
+      .page-menu { height: 58px; padding: 0 16px; }
+      .menu-toggle { display: block; }
+      .nav-links {
+        display: none; position: fixed; inset: 96px 0 auto; padding: 14px; background: var(--panel-solid);
+        border-bottom: 1px solid var(--line); flex-direction: column; align-items: stretch;
+      }
+      .page-menu.is-open .nav-links { display: flex; }
+      .theme-nav { margin-left: 0; }
+      .shell { width: auto; max-width: none; margin-inline: 10px; padding-top: 16px; }
+      .hero, .lab-grid, .controls, .workspace, .scene-panel, .metrics, .lesson-grid, .education-cards { width: 100%; max-width: 100%; min-width: 0; }
+      .hero { min-height: 460px; padding: 30px 22px; }
+      .hero-copy { max-width: 100%; }
+      .hero h1 { max-width: 100%; font-size: clamp(42px, 12vw, 58px); overflow-wrap: anywhere; }
+      .hero p { max-width: 100%; font-size: 16px; }
+      .controls-heading { display: block; margin-bottom: 20px; }
+      .controls-heading .eyebrow { margin-bottom: 10px; }
+      .controls-heading p { margin-top: 10px; font-size: 14px; }
+      .controls-inner { gap: 20px; }
+      .chip, .view-button, select { width: 100%; }
+      .mode-switch { display: grid; width: 100%; grid-template-columns: 1fr 1fr; }
+      .core-controls { grid-template-columns: 1fr; gap: 10px; padding-top: 20px; }
+      .core-controls > .control-group:last-child { grid-column: auto; }
+      #propControls { grid-template-columns: 1fr; padding: 16px; }
+      #propControls > * { grid-column: 1; }
+      .simulation-status { display: block; }
+      .simulation-scope { margin-top: 8px; text-align: left; }
+      .view-controls { display: block; }
+      .view-options { margin-top: 10px; }
+      .view-option { flex: 1 1 calc(50% - 8px); }
+      .scene-panel { min-height: 430px; height: 55vh; }
+      .scene-panel.is-focus-mode #equityCanvas { width: 100%; margin-left: 0; }
+      .scene-panel.is-focus-mode > .controls { inset: 10px; width: auto; }
+      .scene-panel.is-focus-mode .scene-top { left: 10px; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .metric { min-height: 124px; }
+      .metric-wide, .prop-metrics .metric-wide { grid-column: 1/-1; }
+      .lesson-grid, .education-cards { grid-template-columns: 1fr; }
+      .scene-top { inset: 10px 10px auto; }
+      .scene-top .scene-label:last-child { display: none; }
+      .selected-path-card { right: 10px; bottom: 62px; width: min(230px, calc(100% - 20px)); padding: 11px; }
+      .selected-path-card > strong { margin-bottom: 7px; font-size: 16px; }
+      .selected-path-row { gap: 8px; font-size: 11px; }
+    }
+    @media (max-width: 480px) {
+      .hero { min-height: 430px; padding: 28px 18px; }
+      .hero h1 { font-size: 42px; line-height: 1; }
+      .hero-hook { margin-top: 22px; padding-left: 13px; }
+      .metrics, .metrics.prop-metrics { grid-template-columns: 1fr; }
+      .metric, .metric-wide, .prop-metrics .metric, .prop-metrics .metric-wide { grid-column: 1; }
+      .metric { min-height: 0; padding: 19px; }
+      .controls { padding: 18px; }
+      .mode-switch { grid-template-columns: 1fr 1fr; }
+      .range-editor { grid-template-columns: minmax(80px,1fr) 96px; gap: 10px; }
+      .metrics { grid-template-columns: 1fr; }
+      .metric { min-height: 112px; padding: 18px; }
+      .compare-row { grid-template-columns: 88px minmax(0,1fr) 58px; }
+    }
+  </style>
+</head>
+<body>
+  <a class="partner-strip" href="https://www.tickmill.com/eu/pl" target="_blank" rel="noopener noreferrer" aria-label="Tickmill">
+    <img src="assets/tickmill.png" alt="Tickmill" />
+  </a>
+  <nav class="page-menu" aria-label="Menu strony">
+    <a class="brand-link" href="index.html" aria-label="XPREAY">
+      <img class="brand-logo black" src="assets/xpreay_black_logo.svg" alt="XPREAY" />
+      <img class="brand-logo white" src="assets/xpreay_white_logo.svg" alt="" aria-hidden="true" />
+    </a>
+    <button class="menu-toggle" id="menuToggle" type="button" aria-label="Otwórz menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <div class="nav-links">
+      <a href="index.html#about">O mnie</a>
+      <a href="index.html#education">Edukacja</a>
+      <a href="index.html#tools">Narzędzia</a>
+      <a href="sessions.html">Sesje handlowe</a>
+      <a href="risk-lab.html" aria-current="page">Risk Lab</a>
+      <a href="index.html#contact">Kontakt</a>
+      <button class="theme-nav" id="themeToggle" type="button"><span class="theme-icon">☀</span> <span class="theme-text">Light mode</span></button>
+    </div>
+  </nav>
+
+  <main class="shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">XPREAY Risk Lab</span>
+        <h1 class="gradient-text">Zobacz cenę swoich zasad.</h1>
+        <p>Interaktywne laboratorium pokazujące setki możliwych przebiegów tej samej strategii. Parametry mogą być identyczne. Droga każdego tradera może wyglądać zupełnie inaczej.</p>
+        <p class="hero-hook">Masz strategię z dodatnią przewagą. Sprawdź, czy przeżyjesz jej najgorszą możliwą serię.</p>
+      </div>
+    </header>
+
+    <section class="lab-grid" id="risk-simulator" aria-label="Symulator ryzyka">
+      <aside class="panel controls">
+        <div class="controls-heading">
+          <span class="eyebrow">Konfiguracja</span>
+          <h2 class="panel-title">Zbuduj scenariusz</h2>
+          <p>Wybierz typ konta, a następnie ustaw parametry swojej strategii. Dla propa możesz wczytać typowy model wymagań.</p>
+        </div>
+        <div class="controls-inner">
+          <div class="setup-block account-setup">
+            <span class="setup-label">1. Typ konta</span>
+            <div class="mode-switch" role="group" aria-label="Typ symulowanego konta">
+              <button class="chip active" type="button" data-account-mode="own">Konto własne</button>
+              <button class="chip" type="button" data-account-mode="prop">Prop Challenge</button>
+            </div>
+          </div>
+          <div class="core-controls">
+          <label class="control-group">
+            <span class="control-head"><span id="capitalLabel">Kapitał początkowy</span></span>
+            <span class="number-shell capital-shell"><input class="number-input" id="initialCapital" type="number" min="100" step="100" value="10000" /><span>USD</span></span>
+            <span class="field-help">Kwota startowa, od której liczone są wszystkie ścieżki, wyniki i obsunięcia.</span>
+          </label>
+          <label class="control-group">
+            <span class="control-head"><span>Skuteczność (win rate)</span><span class="control-value" id="wrValue">45%</span></span>
+            <input id="winRate" type="range" min="20" max="90" value="45" step="1" />
+          </label>
+          <label class="control-group">
+            <span class="control-head"><span>Relacja zysku do ryzyka (RR)</span><span class="control-value" id="rrValue">2.0R</span></span>
+            <input id="rr" type="range" min="0.5" max="6" value="2" step="0.1" />
+          </label>
+          <label class="control-group">
+            <span class="control-head"><span id="riskLabel">Ryzyko na transakcję</span><span class="control-value" id="riskValue">1.0%</span></span>
+            <span id="percentRiskControl"><input id="risk" type="range" min="0.25" max="10" value="1" step="0.25" /></span>
+            <span class="fixed-risk-control" id="fixedRiskControl" hidden>
+              <span class="number-shell"><input id="fixedRiskAmount" type="number" min="1" step="10" value="100" aria-label="Stała kwota ryzyka" /><span>USD</span></span>
+              <span class="field-help" id="fixedRiskHelp">100 USD odpowiada 1,00% kapitału początkowego.</span>
+            </span>
+            <span class="risk-message" id="riskMessage">Umiarkowane ryzyko. Wariancja pozostaje możliwa do kontrolowania.</span>
+          </label>
+          <label class="control-group" id="tradesControl">
+            <span class="control-head"><span>Liczba transakcji</span><span class="control-value" id="tradesValue">150</span></span>
+            <input id="trades" type="range" min="20" max="500" value="150" step="10" />
+          </label>
+          <label class="control-group">
+            <span class="control-head"><span>Ścieżki na wykresie</span><span class="control-value" id="pathsValue">180</span></span>
+            <input id="paths" type="range" min="30" max="250" value="180" step="10" />
+          </label>
+          <label class="control-group">
+            <span class="control-head"><span>Średni koszt transakcji</span><span class="control-value" id="costValue">0.05R</span></span>
+            <input id="transactionCost" type="range" min="0" max="0.3" value="0.05" step="0.01" />
+            <span class="field-help" id="costHelp">Spread, prowizja i poślizg przeliczone na część ryzyka 1R.</span>
+          </label>
+          <label class="control-group">
+            <span class="control-head"><span>Sposób wyliczania pozycji</span></span>
+            <select id="sizing">
+              <option value="percent">Stały procent bieżącego kapitału</option>
+              <option value="amount">Stała kwota ryzyka</option>
+              <option value="throttle">Redukuj ryzyko po serii strat</option>
+            </select>
+            <span class="field-help" id="sizingHelp"></span>
+            <span class="conditional-controls" id="throttleControls">
+              <span class="control-group">
+                <span class="control-head"><span>Redukuj po serii strat</span><span class="control-value" id="throttleAfterValue">1</span></span>
+                <input id="throttleAfter" type="range" min="1" max="6" value="1" step="1" />
+                <span class="field-help">Liczba kolejnych strat potrzebna do uruchomienia niższego ryzyka.</span>
+              </span>
+              <span class="control-group">
+                <span class="control-head"><span>Zmniejsz ryzyko o</span><span class="control-value" id="throttleReductionValue">50%</span></span>
+                <input id="throttleReduction" type="range" min="10" max="90" value="50" step="5" />
+                <span class="field-help" id="throttleExample">Po stracie ryzyko 1,00% spadnie do 0,50%.</span>
+              </span>
+              <label class="inline-check"><input id="restoreAfterWin" type="checkbox" checked /> Po wygranej wróć do bazowego ryzyka.</label>
+            </span>
+          </label>
+          </div>
+          <div class="mode-panel" id="propControls">
+            <div class="challenge-preset">
+              <span class="control-head"><span>Preset wymagań challenge'u</span></span>
+              <select id="challengePreset" aria-label="Preset wymagań challenge'u">
+                <option value="custom">Własne ustawienia</option>
+                <optgroup label="Forex / CFD">
+                  <option value="oneStep">1-Step · 10 / 3 / 10</option>
+                  <option value="twoStep">2-Step · etap 1 · 10 / 5 / 10</option>
+                </optgroup>
+                <optgroup label="Futures · konto 50K">
+                  <option value="futures50Trailing">Futures 50K · target 3K / trailing DD 2K</option>
+                </optgroup>
+              </select>
+              <span class="field-help" id="challengePresetHelp">Wybierz model lub ustaw parametry ręcznie poniżej.</span>
+            </div>
+            <span class="subsection-label">Parametry challenge'u</span>
+            <label class="control-group">
+              <span class="control-head"><span>Profit target</span><span class="control-value" id="targetValue">8%</span></span>
+              <input id="profitTarget" type="range" min="4" max="15" value="8" step="0.5" />
+            </label>
+            <label class="control-group">
+              <span class="control-head"><span>Maksymalny drawdown</span><span class="control-value" id="maxDdValue">10%</span></span>
+              <input id="maxDrawdown" type="range" min="3" max="20" value="10" step="0.5" />
+            </label>
+            <label class="control-group">
+              <span class="control-head"><span>Dzienny drawdown</span><span class="control-value" id="dailyDdValue">5%</span></span>
+              <input id="dailyDrawdown" type="range" min="0" max="10" value="5" step="0.5" />
+            </label>
+            <label class="control-group">
+              <span class="control-head"><span>Typ maksymalnego DD</span></span>
+              <select id="drawdownType">
+                <option value="static">Static · stały próg od kapitału startowego</option>
+                <option value="trailing">Trailing EOD · próg podąża za saldem EOD</option>
+              </select>
+              <span class="field-help" id="drawdownTypeHelp"></span>
+            </label>
+            <label class="control-group">
+              <span class="control-head"><span>Transakcje dziennie</span><span class="control-value" id="tradesDayValue">2</span></span>
+              <input id="tradesPerDay" type="range" min="1" max="8" value="2" step="1" />
+            </label>
+            <div class="control-group">
+              <span class="control-head"><span>Zasada czasu</span></span>
+              <label class="time-policy-field"><span>Co dzieje się po końcu okresu</span><select id="timePolicy">
+                <option value="trades">Brak limitu czasu · liczba transakcji</option>
+                <option value="fail">Konto wygasa · fail</option>
+                <option value="rebill">Rebill · konto pozostaje aktywne</option>
+              </select></label>
+              <span class="field-help" id="timePolicyHelp">Bez limitu czasu wynik jest mierzony po wybranej liczbie transakcji.</span>
+            </div>
+            <div class="control-group" id="periodControl">
+              <span class="control-head"><span id="maxDaysLabel">Okres rozliczeniowy</span><span class="control-value" id="maxDaysValue">60 dni</span></span>
+              <input id="maxDays" type="range" min="10" max="180" value="60" step="5" aria-labelledby="maxDaysLabel" />
+              <div class="trading-days-option">
+                <label class="inline-check"><input id="tradingDaysOnly" type="checkbox" checked /> Tylko dni handlowe (pon.–pt.)</label>
+                <span class="field-help" id="tradingDaysHelp">Okres ma znaczenie tylko dla wygaśnięcia lub rebillu.</span>
+              </div>
+            </div>
+            <p class="prop-disclaimer">Presety odwzorowują tylko pola obsługiwane przez symulator. Nie obejmują m.in. consistency target, best day rule, limitów kontraktów ani minimalnej liczby dni. Zawsze sprawdź aktualny regulamin swojej firmy.</p>
+          </div>
+          <div class="simulation-status">
+            <p class="live-note"><strong>Symulacja na żywo</strong><span>Każda zmiana automatycznie przelicza wyniki.</span></p>
+            <p class="simulation-scope" id="simulationScope">Wykres pokazuje 180 ścieżek. Statystyki policzone na 5000 symulacji.</p>
+          </div>
+        </div>
+      </aside>
+
+      <div class="workspace">
+        <div class="view-controls panel" aria-label="Ustawienia widoku wykresu">
+          <div class="view-mode">
+            <span class="control-head">Widok wykresu</span>
+            <button class="chip active" type="button" data-view-mode="3d">3D</button>
+            <button class="chip" type="button" data-view-mode="2d">2D</button>
+            <button class="view-button" id="resetView" type="button">Wyrównaj widok</button>
+          </div>
+          <div class="view-options">
+            <label class="view-option"><input id="showAlternatives" type="checkbox" checked /> Alternatywne ścieżki</label>
+            <label class="view-option"><input id="showMedian" type="checkbox" checked /> Mediana</label>
+            <label class="view-option"><input id="showSelected" type="checkbox" checked /> Wybrana ścieżka</label>
+            <label class="view-option"><input id="showBreakEvenLine" type="checkbox" checked /> Linia kapitału startowego</label>
+            <label class="view-option"><input id="showDrawdown" type="checkbox" checked /> Poziomy drawdownu</label>
+          </div>
+        </div>
+        <div class="scene-panel">
+          <canvas id="equityCanvas" aria-label="Trójwymiarowy las możliwych krzywych kapitału"></canvas>
+          <button class="view-button focus-controls-toggle" id="toggleFocusControls" type="button" aria-expanded="true">Ukryj parametry</button>
+          <div class="scene-top">
+            <span class="scene-label" id="sceneAxisLabel">X: transakcje · Y: kapitał · Z: scenariusze</span>
+            <span class="scene-label" id="sceneInstruction">Przeciągnij, aby obrócić · scroll, aby przybliżyć</span>
+            <button class="view-button scene-fullscreen" id="toggleFullscreen" type="button" aria-label="Otwórz wykres na pełnym ekranie">Pełny ekran</button>
+          </div>
+          <div class="scene-outcome-summary" id="sceneOutcomeSummary" hidden></div>
+          <div class="selected-path-card" id="selectedPathCard">
+            <span>Wybrana ścieżka</span>
+            <strong id="selectedPathTitle">Mediana symulacji</strong>
+            <div class="selected-path-row"><span>Kapitał końcowy</span><b id="selectedFinal">—</b></div>
+            <div class="selected-path-row"><span>Wynik względem startu</span><b id="selectedDelta">—</b></div>
+            <div class="selected-path-row"><span>Max DD</span><b id="selectedDd">—</b></div>
+            <div class="selected-path-row"><span>Najdłuższa seria strat</span><b id="selectedLosses">—</b></div>
+            <div class="selected-path-row"><span>Wykonane transakcje</span><b id="selectedTrades">—</b></div>
+            <div class="selected-path-row"><span>Śr. koszt / transakcję</span><b id="selectedAvgCost">—</b></div>
+            <div class="selected-path-row"><span>Łączne koszty</span><b id="selectedCosts">—</b></div>
+            <div class="selected-path-row" id="selectedRuinRow" hidden><span>Status ścieżki</span><b id="selectedRuinResult">RUINA</b></div>
+            <div class="selected-path-row" id="selectedPropRow" hidden><span>Wynik challenge'u</span><b id="selectedPropResult">—</b></div>
+          </div>
+          <div class="legend">
+            <span><i class="dot" style="background:#31d1a0"></i>zysk</span>
+            <span><i class="dot" style="background:#f05a54"></i>strata</span>
+            <span><i class="dot" style="background:#f6c665"></i>wybrana ścieżka</span>
+            <span><i class="dot" style="background:#eef3ff"></i>mediana</span>
+            <span><i class="dot" style="background:#72a8ff"></i>kapitał startowy</span>
+            <span class="plane-tag"><i class="dot" style="background:#31d1a0"></i>target / pass</span>
+            <span class="plane-tag"><i class="dot" style="background:#ff655d"></i>limit DD / fail</span>
+          </div>
+        </div>
+        <div class="metrics metric-set" id="ownMetrics">
+          <div class="metrics-heading"><div><span class="eyebrow">Wyniki symulacji</span><h2>Statystyki konta</h2></div><p>Najważniejsze liczby z 5000 alternatywnych przebiegów tej samej strategii.</p></div>
+          <div class="metric metric-featured"><span>Expectancy netto</span><strong id="expectancyMetric">+0.30R</strong><small id="expectancyBreakdown">brutto +0.35R · koszt 0.05R</small></div>
+          <div class="metric metric-featured"><span>Mediana kapitału</span><strong id="medianMetric">—</strong><small>po całej próbie</small></div>
+          <div class="metric metric-featured"><span>Mediana max DD</span><strong id="drawdownMetric">—</strong><small>typowy najgłębszy spadek</small></div>
+          <div class="metric"><span>Zakończone zyskiem</span><strong id="profitMetric">—</strong><small>powyżej kapitału startowego</small></div>
+          <div class="metric"><span>Zakończone stratą</span><strong id="underwaterMetric">—</strong><small>poniżej kapitału startowego</small></div>
+          <div class="metric">
+            <span>Najdłuższa seria strat</span>
+            <div class="metric-breakdown two-values">
+              <div><small>Mediana</small><strong id="lossStreakMedian">—</strong></div>
+              <div><small>90 percentyl</small><strong id="lossStreakP90">—</strong></div>
+            </div>
+          </div>
+          <div class="metric metric-wide">
+            <span>Zakres końcowego kapitału</span>
+            <div class="metric-breakdown">
+              <div><small>P5 · słaby</small><strong id="capitalP5">—</strong></div>
+              <div><small>P50 · mediana</small><strong id="capitalP50">—</strong></div>
+              <div><small>P95 · mocny</small><strong id="capitalP95">—</strong></div>
+            </div>
+          </div>
+          <div class="metric metric-wide">
+            <span>Szansa dotknięcia drawdownu</span>
+            <div class="metric-breakdown">
+              <div><small>DD -10%</small><strong id="ddRisk10">—</strong></div>
+              <div><small>DD -20%</small><strong id="ddRisk20">—</strong></div>
+              <div><small>DD -30%</small><strong id="ddRisk30">—</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="metrics prop-metrics metric-set" id="propMetrics" hidden>
+          <div class="metrics-heading"><div><span class="eyebrow">Wyniki symulacji</span><h2>Statystyki challenge'u</h2></div><p>Szansa zaliczenia, ryzyko naruszenia limitów i typowy czas rozstrzygnięcia.</p></div>
+          <div class="metric metric-featured metric-pass"><span>Pass rate</span><strong id="passMetric">—</strong><small>target przed limitem</small></div>
+          <div class="metric metric-featured metric-fail"><span>Fail · daily DD</span><strong id="failDailyMetric">—</strong><small>naruszenie limitu dziennego</small></div>
+          <div class="metric metric-featured metric-fail"><span>Fail · max DD</span><strong id="failMaxMetric">—</strong><small>naruszenie limitu konta</small></div>
+          <div class="metric metric-featured metric-active"><span id="activeMetricLabel">Still active</span><strong id="activeMetric">—</strong><small id="activeMetricHelp">bez rozstrzygnięcia w wybranej próbie</small></div>
+          <div class="metric metric-time"><span>Dni do passa</span><strong id="passDaysMetric">—</strong><small id="passDaysLabel">mediana</small></div>
+          <div class="metric metric-time"><span>Dni do faila</span><strong id="failDaysMetric">—</strong><small id="failDaysLabel">mediana</small></div>
+          <div class="metric"><span>Mediana max DD</span><strong id="propDdMetric">—</strong><small>najgłębsze obsunięcie</small></div>
+          <div class="metric"><span>Najdłuższa seria strat</span><strong id="propLossMetric">—</strong><small>mediana / 90 percentyl</small></div>
+          <div class="metric metric-wide"><span>Expectancy po kosztach</span><strong id="propExpectancyMetric">—</strong><small id="propExpectancyBreakdown">brutto · koszt · netto</small></div>
+          <div class="metric metric-wide"><span>Mediana kosztów challenge'u</span><strong id="propCostMetric">—</strong><small>spread, prowizja i poślizg</small></div>
+        </div>
+
+        <div class="lesson-grid">
+          <article class="panel lesson">
+            <span class="eyebrow">Rozkład końcowego kapitału</span>
+            <h2>Edge nie gwarantuje jednej drogi.</h2>
+            <p>Każdy słupek pokazuje, jak często symulacja kończyła się w danym przedziale. Im szerszy rozkład, tym większej odporności psychicznej i kapitałowej wymaga strategia.</p>
+            <div class="distribution" id="distribution"></div>
+          </article>
+          <article class="panel lesson">
+            <span class="eyebrow">Wpływ zasad</span>
+            <h2>Ochrona też ma koszt.</h2>
+            <p id="lessonText">Automatyczne ograniczanie ryzyka zmniejsza ekspozycję podczas obsunięcia, ale spowalnia późniejsze odbicie.</p>
+            <div class="compare-grid">
+              <div class="compare-row"><span>Wzrost</span><div class="track"><div class="fill" id="growthBar"></div></div><b id="growthScore">—</b></div>
+              <div class="compare-row"><span>Odporność</span><div class="track"><div class="fill" id="safetyBar"></div></div><b id="safetyScore">—</b></div>
+              <div class="compare-row"><span>Wariancja</span><div class="track"><div class="fill" id="varianceBar"></div></div><b id="varianceScore">—</b></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <span class="eyebrow">Tryby edukacyjne</span>
+        <h2>Nie przewiduj. Testuj konsekwencje.</h2>
+        <p>Risk Lab pokazuje, że dobry trading nie polega wyłącznie na przewidywaniu kierunku, lecz na kontrolowaniu konsekwencji każdej decyzji.</p>
+      </div>
+      <div class="education-cards">
+        <article class="education-card"><strong>Edge nie gwarantuje jednej drogi</strong><p>Dodatnia expectancy nie oznacza, że każda ścieżka zakończy się zyskiem. Monte Carlo pokazuje rozrzut możliwych sekwencji wyników.</p></article>
+        <article class="education-card"><strong>Drawdown jest częścią systemu</strong><p>Nawet dobra strategia może mieć długie serie strat i głębokie obsunięcia.</p></article>
+        <article class="education-card"><strong>Prop to gra o przeżycie</strong><p>W challenge'u nie liczy się tylko dojście do targetu. Liczy się dojście do targetu przed naruszeniem daily lub max drawdownu.</p></article>
+        <article class="education-card"><strong>Ryzyko rośnie nieliniowo</strong><p>Zwiększenie ryzyka na trade może mocno przyspieszyć wzrost, ale jeszcze mocniej zwiększyć ryzyko faila.</p></article>
+      </div>
+    </section>
+    <p class="footer-note">Narzędzie edukacyjne. Symulacje nie są prognozą przyszłych wyników ani rekomendacją inwestycyjną.</p>
+  </main>
+
+  <script src="assets/three.min.js"></script>
+  <script type="text/plain" id="legacyRiskLabScript">
+    const $ = (id) => document.getElementById(id);
+    const controls = {
+      capital: $("initialCapital"), winRate: $("winRate"), rr: $("rr"), risk: $("risk"), trades: $("trades"),
+      paths: $("paths"), sizing: $("sizing"), breakEven: $("breakEven"), throttleAfter: $("throttleAfter"),
+      throttleReduction: $("throttleReduction"), restoreAfterWin: $("restoreAfterWin")
+    };
+    const presetValues = {
+      operator: { capital: 10000, winRate: 45, rr: 2, risk: 1, trades: 150, paths: 180, sizing: "throttle", breakEven: "structural", throttleAfter: 1, throttleReduction: 50, restoreAfterWin: true },
+      scalper: { capital: 10000, winRate: 68, rr: .8, risk: .75, trades: 300, paths: 180, sizing: "percent", breakEven: "balanced", throttleAfter: 1, throttleReduction: 50, restoreAfterWin: true },
+      swing: { capital: 25000, winRate: 34, rr: 3.4, risk: 1, trades: 80, paths: 180, sizing: "percent", breakEven: "none", throttleAfter: 2, throttleReduction: 50, restoreAfterWin: true },
+      aggressive: { capital: 10000, winRate: 45, rr: 2, risk: 5, trades: 150, paths: 180, sizing: "percent", breakEven: "aggressive", throttleAfter: 1, throttleReduction: 50, restoreAfterWin: true }
+    };
+    const riskMessages = [
+      [0.5, "Wysoka odporność na wariancję. Wolniejszy wzrost, więcej przestrzeni na błędy."],
+      [1, "Umiarkowane ryzyko. Wariancja pozostaje możliwa do kontrolowania."],
+      [2, "Agresywne tempo wzrostu. Serie strat zaczynają mieć duże znaczenie."],
+      [5, "Seria strat może poważnie uszkodzić konto."],
+      [10, "Statystyczna droga do ruiny. Dodatni edge może nie wystarczyć."]
+    ];
+    let pathsData = [], medianPath = [], selectedPath = 0, sceneLow = 0, sceneHigh = 0, clickableLines = [];
+    const viewState = { mode: "3d", showAlternatives: true, showMedian: true, showSelected: true, showBreakEvenLine: true, showDrawdown: true };
+
+    function seededRandom(seed) {
+      let value = seed % 2147483647;
+      return () => ((value = value * 16807 % 2147483647) - 1) / 2147483646;
+    }
+    function params() {
+      return {
+        initial: Math.max(100, +controls.capital.value || 10000),
+        wr: +controls.winRate.value / 100, rr: +controls.rr.value, risk: +controls.risk.value / 100,
+        trades: +controls.trades.value, paths: +controls.paths.value, sizing: controls.sizing.value, be: controls.breakEven.value,
+        throttleAfter: +controls.throttleAfter.value, throttleScale: 1 - (+controls.throttleReduction.value / 100),
+        restoreAfterWin: controls.restoreAfterWin.checked
+      };
+    }
+    function effectiveOutcome(random, p) {
+      const win = random() < p.wr;
+      if (p.be === "none") return win ? p.rr : -1;
+      const beChance = p.be === "aggressive" ? .24 : p.be === "balanced" ? .13 : .07;
+      if (random() < beChance) return 0;
+      const clippedWinner = win && p.be === "aggressive" && random() < .16;
+      return clippedWinner ? 0 : win ? p.rr : -1;
+    }
+    function riskFraction(p, equity, initial, lossStreak) {
+      if (p.sizing === "amount") return p.risk * initial / Math.max(equity, 1);
+      if (p.sizing !== "throttle") return p.risk;
+      return lossStreak >= p.throttleAfter ? p.risk * p.throttleScale : p.risk;
+    }
+    function simulate() {
+      const p = params(), initial = p.initial;
+      pathsData = [];
+      for (let s = 0; s < p.paths; s++) {
+        const random = seededRandom(1937 + s * 97 + p.trades);
+        let equity = initial, peak = initial, maxDd = 0, longestLoss = 0, currentLoss = 0, breached = false, lossStreak = 0;
+        const curve = [equity];
+        for (let i = 0; i < p.trades; i++) {
+          const outcome = effectiveOutcome(random, p);
+          const rf = riskFraction(p, equity, initial, lossStreak);
+          equity = Math.max(0, equity * (1 + outcome * rf));
+          peak = Math.max(peak, equity);
+          const dd = 1 - equity / peak;
+          maxDd = Math.max(maxDd, dd);
+          breached ||= dd >= .30;
+          currentLoss = outcome < 0 ? currentLoss + 1 : 0;
+          if (outcome < 0) lossStreak += 1;
+          else if (outcome > 0 && p.restoreAfterWin) lossStreak = 0;
+          longestLoss = Math.max(longestLoss, currentLoss);
+          curve.push(equity);
+        }
+        pathsData.push({ curve, final: equity, maxDd, longestLoss, breached });
+      }
+      medianPath = [];
+      for (let i = 0; i <= p.trades; i++) {
+        const values = pathsData.map(d => d.curve[i]).sort((a,b) => a-b);
+        medianPath.push(values[Math.floor(values.length / 2)]);
+      }
+      selectedPath = pathsData.map((d,i) => [Math.abs(d.final - medianPath.at(-1)), i]).sort((a,b) => a[0]-b[0])[0][1];
+      updateMetrics(p);
+      drawScene(p);
+      updateSelectedPath();
+    }
+    function percentile(values, q) {
+      const v = [...values].sort((a,b) => a-b);
+      return v[Math.min(v.length - 1, Math.floor(v.length * q))];
+    }
+    function money(v) { return new Intl.NumberFormat("pl-PL", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(v); }
+    function updateMetrics(p) {
+      const expectancy = p.wr * p.rr - (1 - p.wr);
+      const finals = pathsData.map(d => d.final);
+      const median = percentile(finals, .5);
+      const medianDd = percentile(pathsData.map(d => d.maxDd), .5);
+      const profit = pathsData.filter(d => d.final > p.initial).length / pathsData.length;
+      const ruin = pathsData.filter(d => d.breached).length / pathsData.length;
+      $("expectancyMetric").textContent = `${expectancy >= 0 ? "+" : ""}${expectancy.toFixed(2)}R`;
+      $("medianMetric").textContent = money(median);
+      $("drawdownMetric").textContent = `${(medianDd * 100).toFixed(1)}%`;
+      $("profitMetric").textContent = `${Math.round(profit * 100)}%`;
+      $("ruinMetric").textContent = `${Math.round(ruin * 100)}%`;
+      const growth = Math.max(3, Math.min(100, (median / p.initial - 1) * 60 + 35));
+      const safety = Math.max(3, Math.min(100, 100 - medianDd * 240));
+      const variance = Math.max(3, Math.min(100, (percentile(finals,.9) - percentile(finals,.1)) / Math.max(p.initial, 1) * 100));
+      [["growth",growth],["safety",safety],["variance",variance]].forEach(([name,val]) => {
+        $(`${name}Bar`).style.width = `${val}%`;
+        $(`${name}Score`).textContent = `${Math.round(val)}`;
+      });
+      $("lessonText").textContent = p.sizing === "throttle"
+        ? "Automatyczne ograniczanie ryzyka zmniejsza ekspozycję podczas obsunięcia, ale spowalnia późniejsze odbicie."
+        : p.be === "aggressive"
+          ? "Szybkie przesuwanie Stop Lossa na zero ogranicza część strat, ale częściej odbiera strategii pełne zwycięstwa."
+          : "Wyższe ryzyko zwiększa tempo wzrostu oraz jednocześnie poszerza rozkład możliwych wyników.";
+      renderDistribution(finals);
+    }
+    function renderDistribution(finals) {
+      const root = $("distribution"), min = Math.min(...finals), max = Math.max(...finals), bins = Array(24).fill(0);
+      finals.forEach(v => bins[Math.min(bins.length-1, Math.floor((v-min)/(max-min || 1)*bins.length))]++);
+      const top = Math.max(...bins);
+      root.innerHTML = bins.map(v => `<i class="bar" style="height:${Math.max(3,v/top*100)}%"></i>`).join("");
+    }
+    function updateSelectedPath() {
+      const path = pathsData[selectedPath];
+      if (!path) return;
+      $("selectedPathTitle").textContent = `Ścieżka ${selectedPath + 1} z ${pathsData.length}`;
+      $("selectedFinal").textContent = money(path.final);
+      const delta = path.final - params().initial;
+      $("selectedDelta").textContent = `${delta >= 0 ? "+" : ""}${money(delta)}`;
+      $("selectedDelta").style.color = delta >= 0 ? "#31d1a0" : "#f05a54";
+      $("selectedDd").textContent = `${(path.maxDd * 100).toFixed(1)}%`;
+      $("selectedLosses").textContent = `${path.longestLoss} transakcji`;
+    }
+    function updateLabels() {
+      $("wrValue").textContent = `${controls.winRate.value}%`;
+      $("rrValue").textContent = `${(+controls.rr.value).toFixed(1)}R`;
+      $("riskValue").textContent = `${(+controls.risk.value).toFixed(2).replace(/0$/,"")}%`;
+      $("tradesValue").textContent = controls.trades.value;
+      $("pathsValue").textContent = controls.paths.value;
+      $("throttleAfterValue").textContent = controls.throttleAfter.value;
+      $("throttleReductionValue").textContent = `${controls.throttleReduction.value}%`;
+      const reducedRisk = +controls.risk.value * (1 - +controls.throttleReduction.value / 100);
+      const throttleAfter = +controls.throttleAfter.value;
+      const lossLabel = throttleAfter === 1 ? "stracie" : throttleAfter < 5 ? "kolejnych stratach" : "kolejnych stratach";
+      $("throttleExample").textContent = `Po ${throttleAfter} ${lossLabel} ryzyko ${(+controls.risk.value).toFixed(2)}% spadnie do ${reducedRisk.toFixed(2)}%.`;
+      $("throttleControls").classList.toggle("is-visible", controls.sizing.value === "throttle");
+      const rv = +controls.risk.value;
+      $("riskMessage").textContent = riskMessages.find(([limit]) => rv <= limit)?.[1] || riskMessages.at(-1)[1];
+      $("riskMessage").style.borderColor = rv <= 1 ? "var(--green)" : rv <= 2 ? "var(--gold)" : "var(--red)";
+      const sizingHelp = {
+        percent: "Ryzyko jest procentem bieżącego kapitału, więc rośnie i maleje razem z kontem.",
+        amount: "Nominalna kwota ryzyka pozostaje stała, niezależnie od aktualnego kapitału.",
+        throttle: "Ryzyko jest redukowane po wybranej liczbie kolejnych strat. Sam ustalasz skalę redukcji i moment powrotu."
+      };
+      const beHelp = {
+        none: "Stop Loss nie jest automatycznie przesuwany na cenę wejścia.",
+        aggressive: "Szybko chroni kapitał, ale częściej zamyka przyszłe zwycięskie transakcje.",
+        balanced: "Modeluje standardowe przesunięcie Stop Lossa na zero po osiągnięciu +1R.",
+        structural: "Stop Loss trafia na zero dopiero po umownym potwierdzeniu struktury."
+      };
+      $("sizingHelp").textContent = sizingHelp[controls.sizing.value];
+      $("breakEvenHelp").textContent = beHelp[controls.breakEven.value];
+    }
+
+    const canvas = $("equityCanvas"), scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(42, 1, .1, 500);
+    camera.position.set(15, 19, 32);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.7));
+    const group = new THREE.Group(); scene.add(group);
+    const grid = new THREE.GridHelper(55, 22, 0x33415f, 0x1d2638); grid.position.y = -8; scene.add(grid);
+    const raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
+    raycaster.params.Line.threshold = .65;
+    let dragging = false, lastX = 0, lastY = 0, pointerStartX = 0, pointerStartY = 0, rotX = -.14, rotY = -.25, distance = 36;
+    const cameraTargets = {
+      "3d": { x: 15, y: 19, z: 36 },
+      "2d": { x: 0, y: 0, z: 48 }
+    };
+    canvas.addEventListener("pointerdown", e => { dragging = true; lastX=e.clientX; lastY=e.clientY; pointerStartX=e.clientX; pointerStartY=e.clientY; canvas.setPointerCapture(e.pointerId); });
+    canvas.addEventListener("pointermove", e => { if(!dragging || viewState.mode === "2d")return; rotY += (e.clientX-lastX)*.006; rotX += (e.clientY-lastY)*.003; rotX=Math.max(-.6,Math.min(.25,rotX)); lastX=e.clientX; lastY=e.clientY; });
+    canvas.addEventListener("pointerup", e => {
+      if (Math.hypot(e.clientX-pointerStartX, e.clientY-pointerStartY) < 6) pickPath(e);
+      dragging=false;
+    });
+    canvas.addEventListener("wheel", e => { e.preventDefault(); distance=Math.max(20,Math.min(62,distance+e.deltaY*.025)); }, { passive:false });
+    function pickPath(e) {
+      const rect = canvas.getBoundingClientRect();
+      pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      pointer.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(pointer, camera);
+      const hit = raycaster.intersectObjects(clickableLines, false)[0];
+      if (!hit || hit.object.userData.pathIndex == null) return;
+      selectedPath = hit.object.userData.pathIndex;
+      drawScene(params());
+      updateSelectedPath();
+    }
+    function clearGroup() {
+      clickableLines = [];
+      while(group.children.length) { const o=group.children.pop(); o.geometry?.dispose(); o.material?.dispose(); }
+    }
+    function lineObject(curve, z, color, opacity, pathIndex=null) {
+      const center = (sceneHigh + sceneLow) / 2, span = Math.max(1000, sceneHigh - sceneLow);
+      const points = curve.map((v,i) => new THREE.Vector3(
+        (i/(curve.length-1)-.5)*48,
+        Math.max(-11, Math.min(11, ((v-center)/span)*20)),
+        z
+      ));
+      const geometry = new THREE.BufferGeometry().setFromPoints(points);
+      const line = new THREE.Line(geometry, new THREE.LineBasicMaterial({ color, transparent:true, opacity, depthWrite:false }));
+      line.userData.pathIndex = pathIndex;
+      return line;
+    }
+    function drawScene(p) {
+      clearGroup();
+      const allValues = pathsData.flatMap(d => d.curve);
+      sceneLow = Math.min(p.initial, percentile(allValues, .02), p.initial * .8);
+      sceneHigh = Math.max(p.initial, percentile(allValues, .98));
+      const step = Math.max(1, Math.ceil(pathsData.length / 200));
+      if (viewState.showAlternatives) {
+        for (let i=0; i<pathsData.length; i+=step) {
+          const d=pathsData[i], z=viewState.mode === "2d" ? 0 : (i/(pathsData.length-1)-.5)*20;
+          const color=d.breached ? 0x7c3b42 : d.final>=p.initial ? 0x2fbf97 : 0xe05252;
+          const line = lineObject(d.curve,z,color,d.breached?.13:.28,i);
+          clickableLines.push(line);
+          group.add(line);
+        }
+      }
+      if (viewState.showBreakEvenLine) group.add(lineObject(Array(p.trades + 1).fill(p.initial), viewState.mode === "2d" ? .2 : -10.7, 0x72a8ff, .95));
+      if (viewState.showDrawdown) group.add(lineObject(Array(p.trades + 1).fill(p.initial * .8), viewState.mode === "2d" ? .15 : -10.5, 0xff655d, .9));
+      if (viewState.showMedian) group.add(lineObject(medianPath, viewState.mode === "2d" ? .35 : 0, 0xeef3ff, .95));
+      if (viewState.showSelected) group.add(lineObject(pathsData[selectedPath].curve, viewState.mode === "2d" ? .55 : 1.1, 0xf6c665, 1));
+    }
+    function resize() {
+      const r=canvas.getBoundingClientRect(), dpr=Math.min(window.devicePixelRatio,1.7);
+      const width=Math.round(r.width*dpr), height=Math.round(r.height*dpr);
+      if (canvas.width !== width || canvas.height !== height) {
+        renderer.setSize(r.width,r.height,false);
+        camera.aspect=r.width/r.height;
+        camera.updateProjectionMatrix();
+      }
+    }
+    function animate() {
+      requestAnimationFrame(animate); resize();
+      const targetX = viewState.mode === "2d" ? 0 : rotX, targetY = viewState.mode === "2d" ? 0 : rotY;
+      const cameraTarget = cameraTargets[viewState.mode];
+      group.rotation.x += (targetX-group.rotation.x)*.08; group.rotation.y += (targetY-group.rotation.y)*.08;
+      camera.position.x += (cameraTarget.x-camera.position.x)*.08;
+      camera.position.y += (cameraTarget.y-camera.position.y)*.08;
+      camera.position.z += (distance-camera.position.z)*.08;
+      camera.lookAt(0,0,0); renderer.render(scene,camera);
+    }
+    Object.values(controls).forEach(control => control.addEventListener("input", () => { updateLabels(); clearTimeout(window.simTimer); window.simTimer=setTimeout(simulate,120); }));
+    document.querySelectorAll("[data-preset]").forEach(btn => btn.addEventListener("click", () => {
+      document.querySelectorAll("[data-preset]").forEach(b=>b.classList.remove("active")); btn.classList.add("active");
+      const values=presetValues[btn.dataset.preset];
+      Object.entries(values).forEach(([key,val]) => {
+        if (controls[key].type === "checkbox") controls[key].checked = val;
+        else controls[key].value = val;
+      });
+      updateLabels(); simulate();
+    }));
+    document.querySelectorAll("[data-view-mode]").forEach(btn => btn.addEventListener("click", () => {
+      document.querySelectorAll("[data-view-mode]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      viewState.mode = btn.dataset.viewMode;
+      distance = viewState.mode === "2d" ? 48 : 36;
+      $("sceneAxisLabel").textContent = viewState.mode === "2d"
+        ? "X: transakcje · Y: kapitał · widok płaski"
+        : "X: transakcje · Y: kapitał · Z: alternatywne sekwencje";
+      $("sceneInstruction").textContent = viewState.mode === "2d"
+        ? "Scroll, aby przybliżyć"
+        : "Przeciągnij, aby obrócić · scroll, aby przybliżyć";
+      drawScene(params());
+    }));
+    [["showAlternatives","showAlternatives"],["showMedian","showMedian"],["showSelected","showSelected"],["showBreakEvenLine","showBreakEvenLine"],["showDrawdown","showDrawdown"]].forEach(([id,key]) => {
+      $(id).addEventListener("change", e => { viewState[key] = e.target.checked; drawScene(params()); });
+    });
+    $("resetView").addEventListener("click", () => {
+      rotX = -.14; rotY = -.25; distance = cameraTargets[viewState.mode].z;
+      camera.position.set(cameraTargets[viewState.mode].x, cameraTargets[viewState.mode].y, cameraTargets[viewState.mode].z);
+    });
+    const menu=$(".page-menu");
+    $("menuToggle").addEventListener("click",()=>menu.classList.toggle("is-open"));
+    const themeToggle=$("themeToggle");
+    themeToggle.addEventListener("click",()=>{
+      const dark=document.documentElement.dataset.theme==="dark"; document.documentElement.dataset.theme=dark?"light":"dark";
+      themeToggle.querySelector(".theme-icon").textContent=dark?"◐":"☀"; themeToggle.querySelector(".theme-text").textContent=dark?"Dark mode":"Light mode";
+    });
+    updateLabels(); simulate(); animate();
+  </script>
+  <script src="risk-lab.js"></script>
+</body>
+</html>

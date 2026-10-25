@@ -26,3 +26,7 @@
   .bs-beacon { opacity: .8; }
 }
 @media (max-width: 800px) { .bs-summit { inset: -70% -40%; } }
+/* Phones: drop the large mask over the contour layer; fade the contours with opacity instead. */
+@media (max-width: 800px), (pointer: coarse) {
+  .bs-summit { -webkit-mask: none; mask: none; opacity: .6; }
+}

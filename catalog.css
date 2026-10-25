@@ -121,3 +121,8 @@
   .catalog.cv2 .tool, .catalog.cv2 .tool-toggle svg { transition: none; }
   .catalog.cv2 .tool:hover { transform: none; }
 }
+/* Phones: the toolbar is opaque enough without a live blur, and large backdrop filters are what
+   make Safari drop frames (black tiles) while scrolling. */
+@media (max-width: 800px), (pointer: coarse) {
+  .catalog.cv2 .catalog-toolbar { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--panel); }
+}

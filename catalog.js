@@ -9,16 +9,22 @@
   const search = catalog.querySelector('#search');
 
   const plural = (n) => (n === 1 ? 'narzędzie' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? 'narzędzia' : 'narzędzi');
+  // Write only real changes: in Safari, setting `hidden` to its current value still counts as a
+  // mutation, and an observer that re-triggers itself locks the page.
+  const setHidden = (el, value) => { if (el && el.hidden !== value) el.hidden = value; };
+  const setText = (el, value) => { if (el && el.textContent !== value) el.textContent = value; };
   function refresh() {
     const visible = tools.filter((t) => !t.hidden);
-    if (count) count.textContent = `${visible.length} ${plural(visible.length)}`;
+    setText(count, `${visible.length} ${plural(visible.length)}`);
     const webVisible = visible.some((t) => t.dataset.type === 'web');
     const tvVisible = visible.some((t) => t.dataset.type === 'tv');
-    catalog.querySelector('.apps-grid').hidden = !webVisible;
-    catalog.querySelector('[data-group=web]').hidden = !webVisible;
-    catalog.querySelector('[data-group=tv]').hidden = !tvVisible;
+    setHidden(catalog.querySelector('.apps-grid'), !webVisible);
+    setHidden(catalog.querySelector('[data-group=web]'), !webVisible);
+    setHidden(catalog.querySelector('[data-group=tv]'), !tvVisible);
   }
-  new MutationObserver(refresh).observe(catalog, { subtree: true, attributes: true, attributeFilter: ['hidden'] });
+  // Watch only the tool cards that app.js filters, never the elements this file changes.
+  const observer = new MutationObserver(refresh);
+  tools.forEach((t) => observer.observe(t, { attributes: true, attributeFilter: ['hidden'] }));
   refresh();
 
   catalog.querySelectorAll('.tool-toggle').forEach((button) => {

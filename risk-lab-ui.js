@@ -3,7 +3,7 @@
    one seeded set of random walks, so the picture is the same on every visit. */
 (() => {
   const chips = document.querySelectorAll('.chip[data-account-mode], .chip[data-view-mode]');
-  const sync = () => chips.forEach((c) => c.setAttribute('aria-pressed', String(c.classList.contains('active'))));
+  const sync = () => chips.forEach((c) => { const v = String(c.classList.contains('active')); if (c.getAttribute('aria-pressed') !== v) c.setAttribute('aria-pressed', v); });
   new MutationObserver(sync).observe(document.querySelector('.rl-body') || document.body, { subtree: true, attributes: true, attributeFilter: ['class'] });
   sync();
 

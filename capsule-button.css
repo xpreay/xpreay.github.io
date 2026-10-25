@@ -12,6 +12,19 @@
 /* The hero stays dark in both themes, so its arrow keeps the dark-glass chip. */
 :root[data-theme=light] :is(.home-hero, .sess-hero) .glass-button:not(.opal) .button-arrow { background: #ffffff14; box-shadow: inset 0 1px 0 #ffffff1f, inset 0 0 0 1px #ffffff12; }
 @media (forced-colors: active) { .glass-button:not(.opal) { border: 1px solid ButtonText; } }
-/* Anti-aliased clipping: overflow:hidden on a rounded box clips its rotating glint without
-   smoothing in Chromium, which shows as stair-stepped edges. clip-path rounds smoothly. */
-.glass-button:not(.opal), .glass-button:not(.opal) .glass-rim { clip-path: inset(0 round 999px); }
+/* Rim as a real border: a 1px transparent border painted with the glint gradient (border-box)
+   under the face (padding-box). Browsers anti-alias borders on curves perfectly, unlike the old
+   masked 1px ring, which stair-stepped on OLED. The glint turns via an animatable angle. */
+@property --rim-a { syntax: '<angle>'; inherits: false; initial-value: -28deg; }
+.glass-button:not(.opal) {
+  border: 1px solid transparent !important;
+  background:
+    linear-gradient(155deg, rgba(218,232,229,.09), transparent 65%) padding-box,
+    linear-gradient(var(--surface), var(--surface)) padding-box,
+    conic-gradient(from var(--rim-a), #74817b 0deg 66deg, var(--rim-cool) 83deg, var(--rim-peak) 91deg, var(--rim-warm) 100deg, #74817b 117deg 246deg, var(--rim-cool) 263deg, var(--rim-peak) 271deg, var(--rim-warm) 280deg, #74817b 297deg) border-box !important;
+  transition: --rim-a 600ms cubic-bezier(.22,1,.36,1), transform 160ms var(--ease-out);
+}
+.glass-button:not(.opal) .glass-rim, .glass-button:not(.opal) .glass-face { display: none; }
+@media (hover: hover) and (pointer: fine) { .glass-button:not(.opal):hover { --rim-a: 40deg; } }
+.glass-button:not(.opal):focus-visible { --rim-a: 40deg; }
+@media (prefers-reduced-motion: reduce) { .glass-button:not(.opal) { transition: transform 160ms var(--ease-out); } }

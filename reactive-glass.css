@@ -1,0 +1,80 @@
+/* One black scene for the original mark and its story, in both themes. */
+.about-section{background:#050606;color:#eff2ef;--secondary:#bbc2bf;--muted:#aab3ae;--line:#2c3230;--invert:1;--accent:#c4e0e2}
+.about-section>.section-rail{background:#050606;border-bottom:0;color:#aab3ae}
+.about-copy,.brand-reveal{background:#050606;border:0}
+.about-section .signature{filter:invert(1)}
+/* Glass is reserved for navigation surfaces. The existing CTA rim stays intact. */
+.social-links{gap:10px}
+.social-links a,.site-header .theme-toggle,.menu-launch{isolation:isolate;overflow:hidden;border:1px solid #ffffff22;background:linear-gradient(140deg,#ffffff12,#ffffff03 60%),#101514b8;backdrop-filter:blur(16px) saturate(1.15);-webkit-backdrop-filter:blur(16px) saturate(1.15);border-radius:10px;color:#edf2ee}
+.social-links a,.site-header .theme-toggle{position:relative}
+@media(max-width:800px){.site-header .theme-toggle span{display:none}.site-header .theme-toggle{width:48px;height:48px;min-width:48px;padding:0;justify-content:center}.menu-launch{position:fixed;z-index:20}}
+.social-links a{padding:10px 14px;min-height:46px;font-size:15px;gap:12px;text-decoration:none}
+.site-header .theme-toggle{align-self:center;min-height:46px;margin-right:20px;padding:10px 16px;font-size:15px}
+.social-links a::before,.site-header .theme-toggle::before,.menu-launch::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;background:radial-gradient(100px circle at var(--light-x,25%) var(--light-y,0%),#edffffdd,#b6c3db66 35%,transparent 75%);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask-composite:exclude;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor}
+.social-links a::after,.site-header .theme-toggle::after,.menu-launch::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;border-radius:inherit;background:radial-gradient(120px circle at var(--light-x,25%) var(--light-y,0%),#e1f9ff16,transparent 80%)}
+.social-links a:active,.site-header .theme-toggle:active,.menu-launch:active{background-color:#25302d;transform:scale(.98)}
+:root[data-theme=light] .site-header .theme-toggle,:root[data-theme=light] .menu-launch{background:linear-gradient(135deg,#ffffffd9,#e7ede8c9);color:#1b2822;border-color:#7b898266}
+:root[data-theme=light] .site-header .theme-toggle::before,:root[data-theme=light] .menu-launch::before{background:radial-gradient(100px circle at var(--light-x,25%) var(--light-y,0%),#314b54cc,transparent 80%)}
+@media(max-width:800px){.about-layout{gap:0}.brand-reveal{padding-bottom:20px}.about-copy{padding-top:20px}.social-links{gap:8px}.social-links a{padding:10px 12px;font-size:14px;gap:8px}.site-header .theme-toggle{margin-right:16px}}
+@media(forced-colors:active){.social-links a,.site-header .theme-toggle,.menu-launch{background:Canvas;color:LinkText;border:1px solid ButtonText;backdrop-filter:none}.social-links a::before,.social-links a::after,.site-header .theme-toggle::before,.site-header .theme-toggle::after,.menu-launch::before,.menu-launch::after{display:none}}
+/* Cinematic mark: perspective and alpha-sliced depth, scroll-driven camera. */
+.brand-reveal{perspective:1000px;perspective-origin:50% 44%;min-height:610px;padding:76px 42px;overflow:hidden}
+.logo-stage{transform-style:preserve-3d;max-width:460px;aspect-ratio:1000/623}
+.logo-depth{position:absolute;inset:0;mask:url('logo.png') center/100% 100% no-repeat;-webkit-mask:url('logo.png') center/100% 100% no-repeat;backface-visibility:hidden}
+.logo-body{background:linear-gradient(135deg,#8d999e 0%,#2a3339 13%,#10161a 34%,#566169 47%,#181f25 57%,#080c10 78%,#4a575e 100%);transform:translateZ(.5px);backface-visibility:hidden}
+.logo-edge{transform:translateZ(1px);backface-visibility:hidden}
+.logo-aura{transform:translateZ(-24px);opacity:.35}
+.about-copy{align-self:center;padding-block:64px}
+@media(max-width:800px){.brand-reveal{min-height:370px;padding:72px 40px 36px;perspective:800px}.about-copy{padding-top:12px;padding-bottom:44px}.logo-stage{max-width:340px}}
+@media(prefers-reduced-motion:reduce){.brand-reveal .logo-stage{transform:rotateX(38deg) rotateY(-16deg) rotateZ(-22deg)!important}}
+/* Camera reveal: start inside the original mark's opening and pull back. */
+.about-layout{display:block}
+.logo-sequence{height:190svh;min-height:1000px;position:relative;background:#050606}
+.logo-sequence .brand-reveal{position:sticky;top:0;height:90svh;min-height:480px;padding:0;perspective:1200px;perspective-origin:50% 50%;border:0;overflow:hidden}
+.logo-sequence .logo-stage{width:min(76vw,1000px);max-width:none;flex:none;transform-origin:78% 46%;opacity:1}
+.logo-sequence .logo-body{background:linear-gradient(125deg,#9aa6ad 0%,#293239 20%,#11171b 37%,#65737d 49%,#1b252d 61%,#080c10 82%,#728089 100%)}
+.about-copy{max-width:1000px;margin:auto;padding:48px 48px 96px;display:grid;grid-template-columns:1fr 1fr;column-gap:64px}
+.about-copy h2{grid-column:1;grid-row:1/4;font-size:clamp(36px,4vw,58px)}
+.about-copy p,.about-copy .social-links{grid-column:2}
+@media(max-width:800px){.logo-sequence{height:160svh;min-height:800px}.logo-sequence .brand-reveal{height:75svh;min-height:360px}.logo-sequence .logo-stage{width:88vw;max-width:none}.about-copy{display:block;padding:32px 24px 56px}.about-copy h2{font-size:36px}}
+@media(prefers-reduced-motion:reduce){.logo-sequence{height:auto;min-height:0}.logo-sequence .brand-reveal{position:relative;height:65svh}.logo-sequence .logo-stage{transform:none}}
+/* Draft to metal: contained composition with no cropped pre-entry frame. */
+.about-section>.section-rail{display:none}
+.logo-sequence{height:240svh;min-height:1400px}
+.logo-sequence .brand-reveal{height:100svh;min-height:620px;display:grid;grid-template-columns:1fr 1.1fr;gap:64px;padding:64px 48px;perspective:none;overflow:hidden;align-items:center}
+.logo-sequence .logo-stage{width:100%;max-width:520px;justify-self:center;transform:none;transform-origin:center;aspect-ratio:1000/623}
+.logo-sequence .about-copy{display:block;padding:0;margin:0;max-width:620px}
+.logo-sequence .about-copy h2{font-size:clamp(36px,4vw,58px)}
+.logo-sequence .logo-body{opacity:0}
+.logo-draft{background:#bccfd4;clip-path:inset(0 100% 0 0);opacity:1;transform:none}
+.logo-guides{position:absolute;inset:-16px;border:1px solid #6d85833b;opacity:0;pointer-events:none}
+.logo-guides::before,.logo-guides::after{content:"";position:absolute;background:#9fb8b164}
+.logo-guides::before{left:50%;top:-10px;bottom:-10px;width:1px}.logo-guides::after{top:50%;left:-10px;right:-10px;height:1px}
+@media(max-width:800px){.logo-sequence{height:220svh;min-height:1300px}.logo-sequence .brand-reveal{min-height:0;height:100svh;padding:32px 24px 88px;grid-template-columns:1fr;grid-template-rows:minmax(130px,25vh) auto;gap:24px;align-content:center}.logo-sequence .logo-stage{width:min(70vw,300px);max-height:24vh}.logo-sequence .about-copy h2{font-size:30px;margin-bottom:18px}.logo-sequence .about-copy p{font-size:16px;line-height:1.55;margin-bottom:16px}.logo-sequence .social-links{margin-top:20px}}
+@media(max-height:700px) and (max-width:800px){.logo-sequence{height:auto;min-height:0}.logo-sequence .brand-reveal{position:relative;height:auto;min-height:0;overflow:visible;padding-block:48px;grid-template-rows:auto auto}.logo-sequence .logo-stage{height:auto;max-height:none;margin-block:16px}}
+@media(prefers-reduced-motion:reduce){.logo-sequence{height:auto;min-height:0}.logo-sequence .brand-reveal{position:relative;height:auto;min-height:0;padding-block:64px}.logo-sequence .logo-stage{transform:none}}
+/* Mobile navigation stays in the thumb zone, including its close control. */
+@media(max-width:800px){
+#mobile-menu{border-radius:20px 20px 0 0;max-height:calc(100dvh - 16px);padding:24px 24px calc(16px + env(safe-area-inset-bottom));background:var(--bg)}
+#mobile-menu[open]{display:flex;flex-direction:column}
+#mobile-menu .menu-top{order:3;border:0;padding:16px 0 0}
+#mobile-menu nav{padding:0 0 24px;gap:2px;align-items:flex-end}
+#mobile-menu nav a{font-size:clamp(28px,8.5vw,40px);line-height:1.2;min-height:48px;padding:4px 0}
+#mobile-menu .menu-settings{padding:0;border-top:1px solid var(--line)}
+#mobile-menu .menu-settings .theme-toggle{min-height:44px;padding:12px 0}
+#mobile-menu .menu-settings fieldset{padding-top:12px;gap:20px}
+#mobile-menu .menu-top button{border-radius:10px;background:var(--panel)}
+html[data-hand=left] #mobile-menu nav{align-items:flex-start}
+}
+
+.logo-edge{overflow:hidden}
+
+
+@media(max-width:800px){.site-header .theme-toggle{padding:0;min-height:48px}.site-header .theme-toggle span{display:none}}
+@media(max-width:800px){
+ .menu-launch{transform-origin:50% 100%}
+ .menu-launch.glass-return::before{animation:menu-glass-condense 560ms ease-out both}
+ .menu-launch:focus-visible{opacity:1!important;filter:none!important;transform:none!important;pointer-events:auto!important}
+}
+@keyframes menu-glass-condense{0%{opacity:.15;filter:brightness(1)}35%{opacity:1;filter:brightness(1.8)}100%{opacity:1;filter:brightness(1)}}
+@media(prefers-reduced-motion:reduce){.menu-launch.glass-return::before{animation:none}}

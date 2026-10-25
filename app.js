@@ -1,0 +1,16 @@
+const root=document.documentElement;
+const storage={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v)}catch{}}};
+function setTheme(theme){root.dataset.theme=theme;storage.set('xpreay-theme',theme);document.querySelectorAll('.theme-toggle').forEach(b=>{b.querySelector('span').textContent=theme==='dark'?'Jasny motyw':'Ciemny motyw';b.setAttribute('aria-label',theme==='dark'?'Włącz jasny motyw':'Włącz ciemny motyw')});document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#101112':'#f5f5f1'}
+setTheme(storage.get('xpreay-theme')==='light'?'light':'dark');
+document.querySelectorAll('.theme-toggle').forEach(b=>b.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark')));
+function setHand(hand){root.dataset.hand=hand;storage.set('xpreay-hand',hand);document.querySelectorAll('[name=hand]').forEach(i=>i.checked=i.value===hand)}
+setHand(storage.get('xpreay-hand')==='left'?'left':'right');document.querySelectorAll('[name=hand]').forEach(i=>i.addEventListener('change',()=>setHand(i.value)));
+const menu=document.querySelector('dialog'),launch=document.querySelector('.menu-launch');
+launch.addEventListener('click',()=>{menu.showModal();launch.setAttribute('aria-expanded','true');document.body.style.overflow='hidden'});
+function closeMenu(){menu.close()}
+document.querySelector('#close-menu').addEventListener('click',closeMenu);menu.addEventListener('close',()=>{launch.setAttribute('aria-expanded','false');document.body.style.overflow='';launch.focus()});menu.addEventListener('click',e=>{if(e.target===menu){const r=menu.getBoundingClientRect();if(e.clientY<r.top)closeMenu()}});menu.querySelectorAll('nav a').forEach(a=>a.addEventListener('click',closeMenu));
+let filter='all';const search=document.querySelector('#search'),tools=[...document.querySelectorAll('.tool')];
+function normalize(t){return t.toLocaleLowerCase('pl').normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/ł/g,'l')}
+function applyFilter(){const query=normalize(search.value.trim());let count=0;tools.forEach(t=>{const visible=(filter==='all'||t.dataset.type===filter)&&normalize(t.textContent).includes(query);t.hidden=!visible;if(visible)count++});document.querySelector('.empty').hidden=count!==0;document.querySelector('.indicator-grid').hidden=!tools.some(t=>t.dataset.type==='tv'&&!t.hidden);document.querySelector('#results').textContent=`Liczba narzędzi: ${count}`}
+document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>{filter=b.dataset.filter;document.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));applyFilter()}));search.addEventListener('input',applyFilter);document.querySelector('#clear-search').addEventListener('click',()=>{search.value='';filter='all';document.querySelectorAll('[data-filter]').forEach(x=>x.setAttribute('aria-pressed',String(x.dataset.filter==='all')));applyFilter();search.focus()});
+function updateClocks(){const now=new Date();document.querySelectorAll('[data-zone]').forEach(t=>{t.textContent=new Intl.DateTimeFormat('pl-PL',{timeZone:t.dataset.zone,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(now);t.dateTime=now.toISOString()})}updateClocks();setInterval(updateClocks,30000);

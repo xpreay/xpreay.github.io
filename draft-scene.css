@@ -1,0 +1,98 @@
+/* First act fills the viewport. Copy enters only after the mark resolves. */
+.logo-sequence{height:175svh;min-height:1100px}
+.logo-sequence .brand-reveal{display:block;position:sticky;height:100svh;min-height:600px;padding:0;overflow:hidden}
+.logo-sequence .logo-stage{position:absolute;left:50%;top:50%;width:min(62vw,780px);max-width:none;max-height:none;transform-origin:center;transform:translate(-50%,-50%);aspect-ratio:1000/623}
+.logo-sequence .about-copy{position:absolute;right:5%;top:50%;transform:translateY(-50%);width:44%;max-width:640px;padding:0;margin:0}
+.logo-sequence .about-copy h2{font-size:clamp(34px,3.7vw,54px)}
+.logo-sequence .about-copy p{font-size:18px;line-height:1.7}
+.draft-geometry{position:absolute;inset:0;width:100%;height:100%;overflow:visible;fill:none;stroke:#b6c9ca;stroke-width:1.2}
+.draft-geometry path{stroke-dasharray:none;stroke-dashoffset:0}
+.draft-contour{stroke:#dde7e6;stroke-width:1.5}
+.draft-extension{stroke:#72908a;stroke-width:.65;opacity:.55}
+.draft-axis{stroke:#8eaaa5;stroke-width:.7;opacity:.65}
+.draft-tick{stroke:#c0d2cd;stroke-width:1}
+.draft-measure{fill:#99b0aa;stroke:none;font:14px Inter,sans-serif;text-anchor:middle}
+@media(max-width:800px){.logo-sequence{height:175svh;min-height:1100px}.logo-sequence .brand-reveal{height:100svh;min-height:0}.logo-sequence .logo-stage{width:76vw;max-width:none}.logo-sequence .about-copy{width:auto;left:24px;right:24px;top:39%;transform:none}.logo-sequence .about-copy h2{font-size:30px;margin-bottom:18px}.logo-sequence .about-copy p{font-size:16px;line-height:1.55;margin-bottom:16px}}
+@media(prefers-reduced-motion:reduce){.logo-sequence{height:auto;min-height:0}.logo-sequence .brand-reveal{position:relative;height:auto;min-height:0;display:flex;flex-direction:column;gap:36px;padding:64px 24px}.logo-sequence .logo-stage{position:relative;left:auto;top:auto;width:min(70vw,440px);transform:none!important}.logo-sequence .about-copy{position:relative;inset:auto;width:100%;max-width:620px;transform:none}}
+/* A more architectural opening and stronger page-wide hierarchy. */
+.home-hero{min-height:max(720px,calc(100svh - 140px))}
+.hero-copy{width:76%;padding:96px 64px 140px}
+.hero-copy h1{font-size:clamp(64px,7.6vw,116px);font-weight:600;line-height:.98;max-width:12ch;letter-spacing:-.04em;margin-bottom:40px}
+.hero-copy p{font-size:20px;line-height:1.65;max-width:44ch;margin-bottom:44px}
+.hero-bottom{padding-inline:64px}
+.mentorship-section{padding-top:96px;padding-bottom:112px}
+.mentorship-section .section-intro h2{font-weight:600;font-size:clamp(38px,4.4vw,64px);max-width:27ch}
+.home-tools-title{padding-top:112px;padding-bottom:64px}
+.home-tools-title h2{font-weight:600}
+.catalog .tool h2{font-weight:550}
+.process-section{padding-block:112px}
+.process-section .section-intro h2,.contact-layout h2{font-weight:600}
+.contact-section{padding-block:128px}
+@media(max-width:800px){.home-hero{min-height:max(740px,calc(100svh - 120px))}.hero-copy{width:100%;padding:64px 24px 200px}.hero-copy h1{font-size:clamp(48px,10.4vw,76px);line-height:1.02;max-width:12ch;margin-bottom:32px}.hero-copy p{font-size:18px;max-width:35ch;margin-bottom:32px}.hero-bottom{padding-inline:24px}.mentorship-section{padding:64px 24px}.mentorship-section .section-intro h2{font-size:36px}.home-tools-title{padding:72px 24px 36px}.process-section{padding-block:64px}.contact-section{padding-block:72px}}
+
+.draft-tip{fill:#e4f5ed;stroke:none}
+
+
+.logo-sequence .about-copy{background:transparent}
+
+
+.logo-sequence .logo-body,.logo-sequence .logo-edge{opacity:0}
+.draft-contour{stroke-width:2;stroke-linecap:round}
+.logo-sequence .about-copy>*{opacity:0}
+@media(max-width:800px){
+.home-hero{min-height:0;height:auto;display:block}
+.hero-copy{padding:56px 24px 80px}
+.hero-bottom{position:relative;inset:auto;padding:0 24px 24px}
+.logo-sequence{height:1500px;min-height:0}
+.logo-sequence .brand-reveal{display:block;position:sticky;top:0;height:850px;min-height:0;padding:0;overflow:hidden}
+.logo-sequence .logo-stage{position:absolute;left:50%;top:180px;width:76vw;max-height:none;margin:0}
+.logo-sequence .about-copy{position:absolute;top:245px;left:24px;right:24px;width:auto;transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+.logo-sequence{height:auto;min-height:0}
+.logo-sequence .brand-reveal{position:relative;display:flex;height:auto;padding:48px 24px;gap:32px}
+.logo-sequence .logo-stage{position:relative;inset:auto;transform:none!important}
+.logo-sequence .about-copy{position:relative;inset:auto;transform:none}
+}
+
+/* Scroll distance reserves the complete drafting, metal and copy sequence. */
+@media(prefers-reduced-motion:no-preference){
+ .logo-sequence{height:220svh}
+}
+@media(max-width:800px) and (prefers-reduced-motion:no-preference){
+ .logo-sequence{height:calc(850px + 65svh)}
+ .logo-sequence .logo-stage{top:150px}
+}
+
+/* Full-screen drafting plate, followed by the editorial composition. */
+@media(prefers-reduced-motion:no-preference){
+ .logo-sequence .logo-stage{width:min(80vw,1080px,112svh)}
+}
+.draft-geometry{stroke:#a4aaa7}
+.draft-contour{stroke:#e6e9e5;stroke-width:1.8;stroke-linecap:butt}
+.draft-extension{stroke:#7c8781;stroke-width:.65;opacity:.38}
+.draft-dimension{stroke:#b3bdb5;stroke-width:.85}
+.draft-centerline{stroke:#6c7871;stroke-width:.65;stroke-dasharray:18 5 3 5!important}
+.draft-registration{stroke:#c9d3cb;stroke-width:.7}
+.draft-angle{stroke:#b3bdb5;stroke-width:.85}
+.draft-compass{stroke:#8d9c92;stroke-width:.7;opacity:.48}
+.draft-candle{stroke:#a3b4a9;stroke-width:1.05;fill:none;opacity:.7}
+.draft-candle-down{stroke:#7e8a83;opacity:.5}
+.draft-formula{font:15px Inter,sans-serif;letter-spacing:.015em;fill:#a9b6ad;stroke:#050606;stroke-width:6px;paint-order:stroke fill;stroke-linejoin:round}
+.draft-candle{stroke:#a6aaa0;stroke-width:.95;stroke-linecap:round;stroke-linejoin:round;opacity:.58}
+.draft-candle-down{opacity:.4}
+.draft-pencil-hatch{stroke:#a6aaa0;stroke-width:.65;opacity:.35;fill:none}
+.draft-pencil-note{stroke:#a6aaa0;stroke-width:.7;opacity:.38;fill:none;stroke-linecap:round}
+.draft-formula{font:italic 18px 'Segoe Print','Bradley Hand',cursive;letter-spacing:0;fill:#a9afa2;stroke-width:3px}
+.draft-measure{font-size:14px;fill:#b6c0b9;letter-spacing:.04em}
+.draft-tip{fill:#f1f5ef;r:1.5}
+@media(max-width:800px) and (prefers-reduced-motion:no-preference){
+ .logo-sequence .logo-stage{width:80vw}
+ .draft-measure{font-size:25px;letter-spacing:0}
+ .draft-contour{stroke-width:2.7}
+ .draft-dimension,.draft-tick,.draft-angle{stroke-width:1.5}
+}
+
+/* Dimension annotations share the notebook handwriting. */
+.draft-measure{font:italic 18px 'Segoe Print','Bradley Hand',cursive;letter-spacing:.01em;fill:#b6bdb0;stroke:#050606;stroke-width:3px;paint-order:stroke fill;stroke-linejoin:round}
+@media(max-width:800px){.draft-measure{font-size:26px}}

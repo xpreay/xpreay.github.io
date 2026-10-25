@@ -1,0 +1,123 @@
+/* Tools catalog, cv2 layout (markup from tools/patch-home-catalog.mjs). Loaded last on the home
+   page and scoped to .catalog.cv2, so it replaces the layered catalog rules from styles.css,
+   section-rhythm.css, page-motion.css and product-separation.css without editing them. */
+.catalog.cv2 { margin: 0 48px 112px; border: 0; }
+
+/* Toolbar: one glass bar. Segmented control, search, live result count. */
+.catalog.cv2 .catalog-toolbar {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 16px;
+  min-height: 0; margin: 0 0 48px; padding: 10px 18px 10px 10px;
+  border: 1px solid #ffffff12; border-radius: 22px;
+  background: linear-gradient(180deg, #ffffff0a, #ffffff02), #121617d9;
+  box-shadow: inset 0 1px 0 #ffffff12, 0 18px 40px #00000040;
+  -webkit-backdrop-filter: blur(18px) saturate(1.3); backdrop-filter: blur(18px) saturate(1.3);
+}
+.catalog.cv2 .filters.seg { margin: 0; }
+.catalog.cv2 .cat-search {
+  justify-self: end; display: flex; align-items: center; gap: 10px;
+  width: min(100%, 420px); max-width: none; min-height: 48px; padding: 0 10px 0 16px;
+  border: 1px solid #ffffff14; border-radius: 14px; border-left-width: 1px;
+  background-color: #0c0f10b3; box-shadow: inset 0 1px 2px #00000066, inset 0 -1px 0 #ffffff0a;
+  transition: border-color 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+.catalog.cv2 .cat-search:focus-within { border-color: color-mix(in srgb, var(--accent), transparent 40%); box-shadow: inset 0 1px 2px #00000066, 0 0 0 3px color-mix(in srgb, var(--accent), transparent 82%); }
+.catalog.cv2 .cat-search svg { width: 18px; height: 18px; color: var(--muted); }
+.catalog.cv2 .cat-search input { padding: 12px 0; font-size: 16px; outline: none; }
+.catalog.cv2 .cat-search input::-webkit-search-cancel-button { filter: grayscale(1) opacity(.6); }
+.catalog.cv2 .cat-search kbd { display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px; border: 1px solid var(--soft-line); border-radius: 6px; font: 500 13px Inter, sans-serif; color: var(--muted); }
+.catalog.cv2 .cat-search:focus-within kbd { opacity: 0; }
+.catalog.cv2 .cat-count { min-width: 92px; font-size: 14px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Group headers: what kind of thing follows. */
+.catalog.cv2 .cat-group { display: flex; align-items: baseline; gap: 12px; margin: 0 0 18px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+.catalog.cv2 .cat-group h3 { margin: 0; font-size: 22px; line-height: 1.2; font-weight: 500; letter-spacing: -.015em; }
+.catalog.cv2 .cat-group-count { font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Card grid. */
+.catalog.cv2 .indicator-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 0 0 64px; }
+.catalog.cv2 .apps-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.catalog.cv2 .apps-grid[hidden], .catalog.cv2 .cat-group[hidden] { display: none; }
+
+.catalog.cv2 .tool {
+  position: relative; isolation: isolate; display: flex; flex-direction: column; align-items: stretch; min-width: 0;
+  margin: 0; padding: 28px; border: 1px solid #ffffff10; border-top: 1px solid #ffffff10; border-radius: 22px;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, -20%), color-mix(in srgb, var(--tint), transparent 90%), transparent 70%), linear-gradient(180deg, #ffffff07, #ffffff01 45%), var(--panel);
+  box-shadow: inset 0 1px 0 #ffffff0d;
+  transition: transform 260ms var(--ease-out), border-color 260ms var(--ease-out), box-shadow 260ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .catalog.cv2 .tool:hover { transform: translateY(-3px); border-color: #ffffff22; box-shadow: inset 0 1px 0 #ffffff14, 0 22px 44px #00000052; }
+}
+.catalog.cv2 .indicator:nth-child(n) { background-color: var(--panel); }
+.catalog.cv2 .indicator:last-child { border-right: 1px solid #ffffff10; }
+
+.catalog.cv2 .tool-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 32px; }
+.catalog.cv2 .tool-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 13px; color: var(--tint);
+  background: color-mix(in srgb, var(--tint), transparent 88%); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tint), transparent 72%), inset 0 1px 0 #ffffff1a; }
+.catalog.cv2 .tool-icon svg { width: 22px; height: 22px; stroke-width: 1.6; }
+.catalog.cv2 .tool-kind { font-size: 14px; color: var(--secondary); }
+.catalog.cv2 .tool h2 { margin: 0 0 12px; font-size: clamp(28px, 2.4vw, 36px); line-height: 1.1; font-weight: 600; letter-spacing: -.03em; }
+.catalog.cv2 .tool-lead { margin: 0 0 4px; max-width: 44ch; font-size: 17px; line-height: 1.6; color: var(--secondary); }
+.catalog.cv2 .tool-more { margin: 8px 0 0; max-width: 44ch; font-size: 16px; line-height: 1.6; color: var(--muted); }
+.catalog.cv2 .tool-toggle { display: inline-flex; align-items: center; gap: 4px; align-self: flex-start; min-height: 40px; padding: 0; border: 0; background: none; color: var(--text); font: inherit; font-size: 15px; }
+.catalog.cv2 .tool-toggle svg { width: 16px; height: 16px; transition: transform 240ms var(--ease-out); }
+.catalog.cv2 .tool-toggle[aria-expanded=true] svg { transform: rotate(180deg); }
+.catalog.cv2 .tool-toggle:hover { color: var(--accent); }
+
+.catalog.cv2 .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 20px 0 28px; padding: 0; }
+.catalog.cv2 .tags li { padding: 4px 11px; border: 1px solid var(--soft-line); border-radius: 999px; font-size: 13px; line-height: 1.4; color: var(--muted); }
+.catalog.cv2 .tags li:nth-child(n+4) { display: none; }
+
+/* CTA: the capsule shape comes from capsule-button.css; in cards it spans the full width. */
+.catalog.cv2 .tool .glass-button { margin-top: auto; width: 100%; max-width: none; }
+
+/* App cards: preview on top, copy below. */
+.catalog.cv2 .web-tool { display: flex; padding: 12px; }
+.catalog.cv2 .web-tool .web-copy { display: flex; flex-direction: column; flex: 1; padding: 24px 16px 16px; }
+.catalog.cv2 .web-tool .web-copy .tool-head { margin-bottom: 20px; }
+.catalog.cv2 .tool-visual { display: flex; flex-direction: column; justify-content: center; min-height: 208px; border-radius: 14px; overflow: hidden; background: color-mix(in srgb, var(--bg), #000 20%); box-shadow: inset 0 1px 2px #00000080, inset 0 0 0 1px #ffffff0a; }
+.catalog.cv2 .tool-visual > div { margin: 0; padding: 22px 24px; border: 0; background: none; }
+.catalog.cv2 .clock-board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
+.catalog.cv2 .clock-board .board-heading { grid-column: 1 / -1; margin: 0 0 4px; }
+.catalog.cv2 .clock-row { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 10px 0 0; border-top: 1px solid var(--soft-line); }
+.catalog.cv2 .clock-row > span { font-size: 14px; color: var(--muted); }
+.catalog.cv2 .clock-row time { font-size: 30px; line-height: 1.15; letter-spacing: -.02em; }
+.catalog.cv2 .risk-diagram > svg { max-height: 150px; }
+.catalog.cv2 .diagram-footer { margin-top: 14px; }
+.catalog.cv2 .risk .web-copy, .catalog.cv2 .risk .risk-diagram { grid-column: auto; grid-row: auto; border: 0; }
+
+.catalog.cv2 .empty { margin-top: 16px; padding: 56px 24px; border: 1px dashed var(--line); border-radius: 22px; }
+.catalog.cv2 .empty button { border-radius: 12px; }
+
+/* Light theme */
+:root[data-theme=light] .catalog.cv2 .catalog-toolbar { border-color: #1a1d1c14; background: linear-gradient(180deg, #ffffffcc, #ffffff99), #eef1ecd9; box-shadow: inset 0 1px 0 #ffffff, 0 14px 34px #1a1d1c14; }
+:root[data-theme=light] .catalog.cv2 .cat-search { border-color: #1a1d1c1f; background-color: #1a1d1c0a; box-shadow: inset 0 1px 2px #1a1d1c1a, inset 0 -1px 0 #ffffffaa; }
+:root[data-theme=light] .catalog.cv2 .tool { border-color: #1a1d1c14; background: radial-gradient(420px circle at var(--mx, 50%) var(--my, -20%), color-mix(in srgb, var(--tint), transparent 84%), transparent 70%), #fbfbf8; box-shadow: 0 1px 2px #1a1d1c0f; }
+:root[data-theme=light] .catalog.cv2 .tool:hover { border-color: #1a1d1c26; box-shadow: 0 18px 36px #1a1d1c1a; }
+:root[data-theme=light] .catalog.cv2 .tool-icon { color: color-mix(in srgb, var(--tint), #000 45%); }
+:root[data-theme=light] .catalog.cv2 .tool-visual { background: #eef1ec; box-shadow: inset 0 1px 2px #1a1d1c14, inset 0 0 0 1px #1a1d1c0d; }
+
+@media (max-width: 1100px) {
+  .catalog.cv2 { margin-inline: 32px; }
+  .catalog.cv2 .indicator-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .catalog.cv2 .indicator-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
+}
+@media (max-width: 800px) {
+  .catalog.cv2 { margin: 0 16px 72px; }
+  .catalog.cv2 .catalog-toolbar { grid-template-columns: 1fr; gap: 10px; padding: 8px; border-radius: 20px; margin-bottom: 36px; }
+  .catalog.cv2 .catalog-toolbar .filters.seg { margin: 0; }
+  .catalog.cv2 .cat-search { justify-self: stretch; width: 100%; }
+  .catalog.cv2 .cat-search kbd { display: none; }
+  .catalog.cv2 .cat-count { text-align: left; padding: 0 8px 4px; }
+  .catalog.cv2 .indicator-grid, .catalog.cv2 .apps-grid { grid-template-columns: 1fr; gap: 12px; }
+  .catalog.cv2 .indicator-grid { margin-bottom: 48px; }
+  .catalog.cv2 .tool { padding: 24px 20px; border-radius: 20px; }
+  .catalog.cv2 .web-tool { padding: 10px; }
+  .catalog.cv2 .web-tool .web-copy { padding: 20px 10px 10px; }
+  .catalog.cv2 .tool-head { margin-bottom: 24px; }
+  .catalog.cv2 .clock-row time { font-size: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .catalog.cv2 .tool, .catalog.cv2 .tool-toggle svg { transition: none; }
+  .catalog.cv2 .tool:hover { transform: none; }
+}

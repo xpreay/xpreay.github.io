@@ -1,0 +1,89 @@
+/* Section rhythm: editorial education, working catalog, process, open contact. */
+.mentorship-section{padding:72px 48px 88px;background:var(--panel)}
+.mentorship-section>.section-rail{padding:0 0 30px;border:0}
+.mentorship-section>.section-intro{display:block;padding:0 0 48px}
+.mentorship-section .section-intro h2{font-size:clamp(40px,4.7vw,68px);max-width:24ch;margin:0 0 32px;line-height:1.08}
+.mentorship-section .section-intro>p{max-width:62ch;margin-left:auto;font-size:18px}
+.mentorship-layout{grid-template-columns:1.35fr 1fr;border:0;gap:64px;align-items:center}
+.mentorship-map{grid-column:1;grid-row:1;min-height:470px;padding:36px;background:#e3e5df;color:#151b1b;border:0;position:relative;overflow:hidden}
+.mentorship-map .map-title{color:#404b48}
+.mentorship-map .map-word{font-size:clamp(42px,5vw,76px);letter-spacing:-.04em;position:relative;z-index:1}
+.mentorship-map .map-path{border-color:#9ba6a0;gap:16px;font-size:16px}
+.mentorship-copy{grid-column:2;grid-row:1;padding:0}
+.mentorship-copy h3{font-size:26px}
+.mentorship-copy p{font-size:18px}
+.home-tools-title{padding:100px 48px 44px;display:grid;grid-template-columns:1.25fr 1fr;column-gap:64px;align-items:end;border:0}
+.home-tools-title .tools-label{grid-column:1/-1;margin-bottom:28px}
+.home-tools-title h2{font-size:clamp(32px,3.1vw,46px);margin:0;max-width:25ch}
+.home-tools-title p{margin:0;font-size:17px}
+.catalog{margin:0 48px 96px;border:1px solid var(--line)}
+.catalog .catalog-toolbar{background:var(--panel)}
+.catalog .tool h2{font-size:clamp(28px,2.7vw,40px)}
+.catalog .tool-meta{margin-bottom:26px}
+.catalog .indicator{padding:32px 24px}
+.catalog .web-tool:last-of-type{border-bottom:0}
+.process-section{background:#070909;color:#edf0ed;padding:80px 48px;display:grid;grid-template-columns:1fr 1.05fr;gap:0 80px;--secondary:#b6bfba;--muted:#adb8b1;--line:#39413d}
+.process-section>.section-rail{grid-column:1;padding:0;border:0;color:#b6bfba}
+.process-section>.section-intro{grid-column:1;display:block;padding:28px 0 0}
+.process-section .section-intro h2{font-size:clamp(36px,4vw,56px);max-width:14ch}
+.process-section .section-intro p{font-size:18px;margin-top:32px}
+.process-steps{grid-column:2;grid-row:1/3;display:block;border:0}
+.process-steps li{display:flex;align-items:baseline;gap:34px;border:0;border-bottom:1px solid var(--line);padding:18px 0;font-size:clamp(36px,4.5vw,64px);line-height:1.4}
+.process-steps li::before{margin:0;font-size:16px;min-width:24px}
+.process-steps li:last-child{border-bottom:1px solid var(--line)}
+.contact-section{padding:100px 48px 88px;background:var(--bg)}
+.contact-section>.section-rail{padding:0;border:0}
+.contact-layout{display:block;padding:36px 0 0}
+.contact-layout h2{font-size:clamp(40px,5vw,72px);max-width:22ch;margin-bottom:28px}
+.contact-layout p{max-width:55ch}
+.contact-link{margin-top:56px;border-top:1px solid var(--line);padding-top:28px}
+.contact-link>span:last-child{font-size:clamp(30px,5.6vw,82px);line-height:1.2;justify-content:space-between;letter-spacing:-.04em}
+.contact-link svg{width:48px;height:48px}
+@media(max-width:1100px){.mentorship-section{padding-inline:32px}.mentorship-layout{gap:32px}.mentorship-map{padding:28px}.mentorship-map .map-path{gap:12px;font-size:14px}.catalog{margin-inline:32px}.home-tools-title{padding-inline:32px;gap:32px}.process-section{gap:0 40px;padding-inline:32px}.contact-section{padding-inline:32px}}
+@media(max-width:800px){.mentorship-section{padding:48px 24px 56px}.mentorship-section>.section-intro{padding-bottom:32px}.mentorship-section .section-intro h2{font-size:38px;max-width:24ch}.mentorship-layout{grid-template-columns:1fr;gap:32px}.mentorship-map{grid-row:1;grid-column:1;min-height:350px;padding:28px 24px}.mentorship-map .map-word{font-size:clamp(40px,9vw,64px)}.mentorship-map .map-path{font-size:15px}.mentorship-copy{grid-row:2;grid-column:1}.home-tools-title{display:block;padding:60px 24px 28px}.home-tools-title h2{font-size:34px;margin-bottom:24px}.catalog{margin:0 16px 56px}.catalog .indicator{padding:32px 20px}.process-section{display:block;padding:48px 24px}.process-section>.section-intro{padding-top:24px}.process-section .section-intro h2{font-size:38px;max-width:18ch}.process-steps{margin-top:32px}.process-steps li{font-size:44px;padding:18px 0}.process-steps li:nth-child(3){border-bottom:1px solid var(--line)}.contact-section{padding:56px 24px}.contact-layout h2{font-size:38px}.contact-link{margin-top:36px}.contact-link>span:last-child{font-size:clamp(24px,6.5vw,42px);gap:12px}.contact-link svg{width:28px;height:28px}}
+/* Editorial grid: staggered placements share a twelve-column framework. */
+@media(min-width:1001px){
+.mentorship-section{padding:80px 48px 104px;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px}
+.mentorship-section>.section-rail{grid-column:1/3;padding-top:12px}
+.mentorship-section>.section-intro{grid-column:3/13;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));column-gap:24px;padding-bottom:64px}
+.mentorship-section .section-intro h2{grid-column:1/10;font-size:clamp(48px,5.5vw,80px);line-height:1.03;max-width:23ch;margin-bottom:40px}
+.mentorship-section .section-intro>p{grid-column:5/11;margin:0}
+.mentorship-layout{grid-column:1/13;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;align-items:start}
+.mentorship-map{grid-column:1/8;grid-row:1;min-height:560px;padding:40px}
+.mentorship-map .map-word{font-size:clamp(64px,7vw,100px);line-height:.98}
+.mentorship-copy{grid-column:9/13;grid-row:1;padding-top:124px}
+.home-tools-title{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;padding-top:104px;padding-bottom:56px}
+.home-tools-title .tools-label{grid-column:1/3;grid-row:1;align-self:start;padding-top:8px}
+.home-tools-title h2{grid-column:3/9;grid-row:1;font-size:clamp(36px,3.9vw,56px)}
+.home-tools-title p{grid-column:9/13;grid-row:1;font-size:17px}
+.catalog .indicator-grid{grid-template-columns:1.15fr 1fr 1fr}
+.catalog .indicator:first-child{background:var(--panel)}
+.catalog .web-tool{grid-template-columns:5fr 7fr}
+.catalog .web-tool.risk{grid-template-columns:7fr 5fr}
+.catalog .risk .web-copy{grid-column:2;grid-row:1;border-left:1px solid var(--line)}
+.catalog .risk .risk-diagram{grid-column:1;grid-row:1;border-left:0;display:flex;flex-direction:column;justify-content:center}
+.process-section{grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;padding-top:104px;padding-bottom:104px}
+.process-section>.section-rail{grid-column:1/3;grid-row:1}
+.process-section>.section-intro{grid-column:1/6;grid-row:2;padding-top:56px}
+.process-steps{grid-column:7/13;grid-row:1/3}
+.process-steps li:nth-child(2){padding-left:32px}.process-steps li:nth-child(3){padding-left:64px}.process-steps li:nth-child(4){padding-left:96px}
+.contact-section{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:24px;padding-top:112px;padding-bottom:104px}
+.contact-section>.section-rail{grid-column:1/3;padding-top:8px}
+.contact-layout{grid-column:3/13;padding:0}
+.contact-layout h2{font-size:clamp(48px,6vw,86px);max-width:17ch;line-height:1.05}
+.contact-layout>div{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));column-gap:24px}
+.contact-layout p{grid-column:5/11;margin-top:12px}
+.contact-link{grid-column:1/11;margin-top:64px}
+}
+/* Two restrained cuts echo the diagonal of the supplied mark. */
+.mentorship-map{clip-path:polygon(0 0,calc(100% - 32px) 0,100% 32px,100% 100%,0 100%)}
+.process-steps li:last-child{position:relative;padding-bottom:24px}
+.process-steps li:last-child::after{content:"";position:absolute;right:0;bottom:-1px;width:24px;height:24px;background:linear-gradient(135deg,transparent calc(50% - .6px),#a5b2ac 50%,transparent calc(50% + .6px));pointer-events:none}
+@media(max-width:800px){.mentorship-map{clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,0 100%)}}
+/* Education opening: a single readable block, no detached label or paragraph. */
+.mentorship-section>.section-rail{display:none}
+.mentorship-section>.section-intro{display:block;grid-column:1/13;max-width:960px;padding-bottom:48px}
+.mentorship-section .section-intro h2{font-size:clamp(34px,4vw,56px);line-height:1.12;max-width:27ch;margin:0 0 24px;font-weight:500;letter-spacing:-.035em}
+.mentorship-section .section-intro>p{margin:0;max-width:65ch;font-size:18px;line-height:1.7}
+@media(min-width:1001px){.mentorship-section{padding-top:64px}.mentorship-copy{padding-top:64px}}
+@media(max-width:800px){.mentorship-section .section-intro h2{font-size:34px}.mentorship-section>.section-intro{padding-bottom:32px}}

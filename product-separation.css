@@ -1,0 +1,33 @@
+/* Each product has its own boundary; the toolbar is separate from the products. */
+.catalog{border:0;margin-bottom:112px}
+.catalog .catalog-toolbar{border:1px solid var(--line);margin-bottom:28px}
+.catalog .indicator-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-bottom:40px}
+.catalog .indicator{padding:30px 28px 32px;border:1px solid var(--line);border-top:2px solid var(--control-line);background:var(--panel)}
+.catalog .tool-meta{padding-bottom:22px;margin-bottom:28px;border-bottom:1px solid var(--line)}
+.catalog .tool-meta span:last-child{color:var(--text)}
+.catalog .tool h2{font-size:clamp(32px,3vw,44px);font-weight:600;line-height:1.08;margin-bottom:28px}
+.catalog .indicator .tags{margin-bottom:36px}
+.catalog .indicator .glass-button{max-width:100%}
+.catalog .indicator .button-label{padding-inline:16px}
+.catalog .web-tool,.catalog .web-tool:last-of-type{margin-top:32px;border:1px solid var(--line);border-top:2px solid var(--control-line);background:var(--panel)}
+.catalog .web-copy{padding:40px}
+.catalog .web-copy .tool-meta{max-width:none}
+.catalog .clock-board,.catalog .risk-diagram{background:var(--bg);margin:20px;padding:28px;border:0}
+.catalog .risk .web-copy{border-left:0}
+.catalog .web-tool h2{font-size:clamp(36px,3.4vw,50px)}
+@media(max-width:1100px){
+ .catalog .indicator-grid{gap:16px}
+ .catalog .indicator{padding:26px 20px}
+ .catalog .indicator .glass-button{font-size:14px}
+ .catalog .indicator .button-label{padding-inline:12px}
+}
+@media(max-width:800px){
+ .catalog .indicator-grid{grid-template-columns:1fr;gap:24px;margin-bottom:32px}
+ .catalog .indicator{padding:28px 24px 32px}
+ .catalog .indicator .glass-button{font-size:16px}
+ .catalog .tool h2{font-size:36px}
+ .catalog .web-tool,.catalog .web-tool.risk{grid-template-columns:1fr;margin-top:28px}
+ .catalog .web-copy,.catalog .risk .web-copy{grid-column:1;grid-row:1;padding:28px 24px}
+ .catalog .clock-board,.catalog .risk .risk-diagram{grid-column:1;grid-row:2;margin:0 12px 12px;padding:24px 16px}
+ .catalog .tool-meta{padding-bottom:18px;margin-bottom:24px}
+}

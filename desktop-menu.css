@@ -1,0 +1,26 @@
+/* Desktop floating menu: same glass button as mobile, top-right, shown after the header leaves view. */
+@media (min-width:801px){
+ :root{--frame-edge:max(20px,calc((100% - 1536px) / 2 + 20px))}
+ .menu-launch{display:flex;align-items:center;gap:12px;position:fixed;top:16px;right:var(--frame-edge);bottom:auto;left:auto;z-index:20;min-height:44px;padding:10px 18px;font-size:16px;box-shadow:0 10px 30px #0005;
+  transform-origin:100% 0;opacity:0!important;transform:translateY(-14px) scale(.9)!important;filter:blur(4px)!important;pointer-events:none!important;
+  transition:opacity .28s var(--ease-out),transform .5s cubic-bezier(.34,1.45,.5,1),filter .28s var(--ease-out)}
+ html[data-hand=left] .menu-launch{left:auto;right:var(--frame-edge)}
+ .desk-menu-on .menu-launch{opacity:1!important;transform:none!important;filter:none!important;pointer-events:auto!important}
+ .menu-launch.glass-return::before{animation:menu-glass-condense 560ms ease-out both}
+ .menu-launch svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.6}
+ #mobile-menu{position:fixed;inset:72px var(--frame-edge) auto auto;margin:0;width:min(380px,calc(100vw - 40px));max-height:calc(100dvh - 92px);padding:8px 24px 20px;border:1px solid var(--line);border-radius:16px;background:var(--bg);box-shadow:0 24px 60px #0006}
+ #mobile-menu[open]{display:flex;flex-direction:column;animation:desk-menu-in .38s cubic-bezier(.23,1,.32,1) both;transform-origin:100% 0}
+ #mobile-menu::backdrop{background:#0004;backdrop-filter:blur(4px)}
+ #mobile-menu .menu-top{order:0;justify-content:flex-end;border:0;padding:8px 0 0}
+ #mobile-menu .menu-top button{width:44px;height:44px}
+ #mobile-menu nav{align-items:flex-end;padding:4px 0 20px;gap:0}
+ #mobile-menu nav a{font-size:28px;min-height:48px;justify-content:flex-end}
+ #mobile-menu .menu-settings{border-top:1px solid var(--line);padding-top:8px}
+ #mobile-menu .menu-settings fieldset{display:none}
+}
+@keyframes desk-menu-in{from{opacity:0;transform:translateY(-10px) scale(.96)}to{opacity:1;transform:none}}
+@media (min-width:801px) and (prefers-reduced-motion:reduce){
+ .menu-launch{transition:opacity .2s linear;transform:none!important;filter:none!important}
+ .menu-launch.glass-return::before,#mobile-menu[open]{animation:none}
+}
+@keyframes menu-glass-condense{0%{opacity:.15;filter:brightness(1)}35%{opacity:1;filter:brightness(1.8)}100%{opacity:1;filter:brightness(1)}}

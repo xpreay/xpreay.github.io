@@ -1,0 +1,40 @@
+/* One narrative interlude between the constructed mark and its purpose. */
+.brand-statement{position:absolute;left:50%;top:50%;width:90%;max-width:1150px;transform:translate(-50%,-50%);opacity:0;pointer-events:none;text-align:center;color:#f2f3ed}
+.brand-statement p{margin:0;font-size:clamp(48px,7.2vw,104px);font-weight:600;line-height:1.03;letter-spacing:-.04em}
+.brand-statement p:first-child{color:#aab5ad;margin-bottom:20px;font-size:clamp(30px,4.2vw,60px)}
+@media(prefers-reduced-motion:no-preference){.logo-sequence{height:300svh}}
+.mentorship-map{background:#f9faf5;clip-path:none;border-radius:2px;box-shadow:0 16px 34px #0002;transform-origin:25% 20%;text-decoration:none!important}
+.mentorship-map::after{content:'';position:absolute;right:0;top:0;width:30px;height:30px;background:linear-gradient(45deg,#c9cfc5 49%,#fff 50%);clip-path:polygon(0 0,100% 100%,0 100%);pointer-events:none}
+.catalog .catalog-toolbar{background:#202827;border-color:#62716a;margin-bottom:32px}
+.catalog .filters{gap:8px;padding:12px 20px;align-items:center}
+.catalog .filters button{padding:12px 16px;min-height:46px;box-shadow:none}
+.catalog .filters button[aria-pressed=true]{background:#e6eee7;color:#18221d;box-shadow:none}
+.catalog .filters button[aria-pressed=true] span{color:#44574b}
+.catalog .indicator:nth-child(1){background:color-mix(in srgb,var(--panel),#7ea8c4 6%);border-top-color:#8cabbd}
+.catalog .indicator:nth-child(2){background:color-mix(in srgb,var(--panel),#ac94c0 6%);border-top-color:#aa98ba}
+.catalog .indicator:nth-child(3){background:color-mix(in srgb,var(--panel),#90b8a3 6%);border-top-color:#98b8a5}
+.catalog .web-tool{border-top-color:#c0ad89}
+.catalog .web-tool.risk{border-top-color:#9caec1}
+:root[data-theme=light] .catalog .catalog-toolbar{background:#e4eae5;border-color:#a4b2a7}
+:root[data-theme=light] .catalog .filters button[aria-pressed=true]{background:#22362c;color:#fff}
+:root[data-theme=light] .catalog .filters button[aria-pressed=true] span{color:#d6e4da}
+@media(max-width:1000px) and (min-width:801px){.mentorship-layout{gap:32px}.mentorship-map{min-height:420px}.mentorship-map .map-word{font-size:54px}.catalog .indicator-grid{grid-template-columns:1fr}.catalog .indicator h2 br{display:none}}
+@media(max-width:800px){
+ .brand-statement{top:42svh;width:calc(100% - 40px)}
+ .brand-statement p{font-size:clamp(34px,8.7vw,62px);letter-spacing:-.035em}
+ .brand-statement p:first-child{font-size:clamp(24px,6vw,38px);margin-bottom:18px}
+ .catalog .filters{padding:10px;gap:2px;justify-content:space-between}
+ .catalog .filters button{padding:12px 10px;font-size:15px}
+ .mentorship-map{min-height:340px}
+ .mentorship-layout{gap:36px}
+ .home-tools-title{padding-top:64px}
+}
+@media(max-width:800px) and (prefers-reduced-motion:no-preference){.logo-sequence{height:calc(850px + 140svh)}}
+@media(prefers-reduced-motion:reduce){.brand-statement{display:none}}
+@media(max-width:360px){
+ .catalog .filters{padding:8px 4px;gap:0}
+ .catalog .filters button{padding:12px 6px;font-size:14px;min-width:0}
+ .contact-link>span:last-child{font-size:22px;gap:8px}
+ .contact-link svg{width:22px;height:22px}
+ .contact-layout h2{font-size:32px;overflow-wrap:anywhere}
+}

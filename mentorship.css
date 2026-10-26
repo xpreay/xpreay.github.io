@@ -1,0 +1,119 @@
+/* Mentorship: one card that reads as a video thumbnail (the series lives on YouTube), a short
+   lead, and one line plus one button under it. Loaded after typography.css. */
+.mentorship-section .section-intro > p { max-width: 34ch !important; }
+
+.ment-card {
+  grid-column: 2 !important; position: relative; display: grid; grid-template-rows: auto 1fr auto;
+  aspect-ratio: 16 / 8; min-height: 360px; padding: 32px 36px; border-radius: 22px; overflow: hidden;
+  color: #eff0ed; text-decoration: none !important; isolation: isolate;
+  background:
+    radial-gradient(120% 90% at 85% 10%, #bed6d81f, transparent 60%),
+    repeating-linear-gradient(0deg, transparent 0 39px, #ffffff0a 39px 40px),
+    repeating-linear-gradient(90deg, transparent 0 39px, #ffffff0a 39px 40px),
+    #0b0c0d;
+  box-shadow: inset 0 0 0 1px #ffffff14, 0 30px 60px -30px #000c;
+  transition: transform 260ms var(--ease-out), box-shadow 260ms var(--ease-out);
+}
+.ment-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; font-size: 14px; color: #9fa8a4; }
+.ment-src { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 8px; border-radius: 999px; background: #ffffff0d; box-shadow: inset 0 0 0 1px #ffffff17; color: #dfe3e0; }
+.ment-src svg { width: 18px; height: 18px; }
+.ment-word { align-self: center; font-size: clamp(52px, 6.4vw, 104px); line-height: .96; font-weight: 600; letter-spacing: -.045em; }
+.ment-play {
+  position: absolute; right: 36px; top: 50%; width: 76px; height: 76px; margin-top: -38px; display: grid; place-items: center;
+  border-radius: 50%; color: #101112; background: #eff0ed; box-shadow: 0 0 0 10px #ffffff0f, 0 12px 30px #0008;
+  transition: transform 260ms var(--ease-out), box-shadow 260ms var(--ease-out);
+}
+.ment-play svg { width: 28px; height: 28px; margin-left: 3px; }
+.ment-route { display: flex; gap: 0; margin: 0; padding: 18px 0 0; list-style: none; border-top: 1px solid #ffffff1f; font-size: 15px; color: #dfe3e0; }
+.ment-route li { flex: 1; display: flex; align-items: baseline; gap: 10px; }
+.ment-route b { font-weight: 500; color: #9fa8a4; font-variant-numeric: tabular-nums; font-size: 13px; }
+@media (hover: hover) and (pointer: fine) {
+  .ment-card:hover { transform: translateY(-3px); box-shadow: inset 0 0 0 1px #ffffff24, 0 40px 70px -30px #000e; }
+  .ment-card:hover .ment-play { transform: scale(1.06); box-shadow: 0 0 0 14px #ffffff12, 0 14px 34px #0009; }
+}
+.ment-card:active { transform: scale(.99); }
+.ment-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+.ment-foot { grid-column: 2 !important; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; margin-top: 28px; }
+.ment-foot p { margin: 0; font-size: clamp(19px, 1.5vw, 22px); line-height: 1.4; font-weight: 500; letter-spacing: -.01em; color: var(--text); }
+
+@media (max-width: 800px) {
+  .ment-card { aspect-ratio: auto; min-height: 340px; padding: 22px 20px; border-radius: 18px; }
+  .ment-word { font-size: clamp(44px, 13vw, 64px); }
+  .ment-play { width: 56px; height: 56px; right: 20px; top: auto; bottom: 112px; margin: 0; box-shadow: 0 0 0 7px #ffffff0f; }
+  .ment-play svg { width: 22px; height: 22px; }
+  .ment-top { font-size: 13px; } .ment-top > span:first-child { display: none; }
+  .ment-route { font-size: 14px; } .ment-route li { flex-direction: column; gap: 2px; }
+  .ment-foot { flex-direction: column; align-items: flex-start; gap: 20px; margin-top: 24px; }
+  .ment-foot p { font-size: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { .ment-card, .ment-play { transition: none; } }
+
+/* Grid fit: the card spans the same edges as the tools catalog below (gutter to gutter). Inside,
+   the small label sits in the rail column and the title starts on the copy line, and the route
+   splits into three equal cells divided by lines, like the catalog columns. */
+@media (min-width: 801px) {
+  .mentorship-section > .section-rail { grid-row: 1 !important; }
+  .mentorship-section > .ment-card { grid-column: 1 / -1 !important; }
+  .ment-card { padding: 32px 0 0 !important; aspect-ratio: auto; min-height: 520px; }
+  .ment-top { padding: 0 32px; }
+  .ment-word { padding-left: calc(var(--rail) + var(--gap)); }
+  .ment-play { right: 48px; }
+  .ment-route { display: grid; grid-template-columns: repeat(3, 1fr); padding: 0; margin-top: 24px; }
+  .ment-route li { padding: 22px 32px 26px; }
+  .ment-route li + li { border-left: 1px solid #ffffff1f; }
+}
+
+/* Tagline inside the card, right under the title. */
+.ment-card { grid-template-rows: auto 1fr auto auto; }
+.ment-word { align-self: end; }
+.ment-tag { margin: 20px 0 32px; max-width: 34ch; font-size: clamp(18px, 1.5vw, 22px); line-height: 1.4; font-weight: 500; letter-spacing: -.01em; color: #eff0ed; }
+.ment-tag .h-dim { color: #9fa8a4; }
+@media (min-width: 801px) { .ment-tag { padding-left: calc(var(--rail) + var(--gap)); max-width: none; } }
+@media (max-width: 800px) { .ment-tag { font-size: 17px; margin: 14px 0 24px; max-width: 70%; } .ment-play { bottom: auto; top: 22px; right: 20px; } .ment-top { padding-right: 72px; } }
+@media (max-width: 800px) { .ment-word { margin-top: 40px; } .ment-card { min-height: 0; } }
+
+/* Owner: keep the card on the copy column (same line as headline and text), not full width. */
+@media (min-width: 801px) {
+  .mentorship-section > .ment-card { grid-column: 2 !important; }
+  .ment-word, .ment-tag { padding-left: 32px; }
+}
+/* Metallic rim like button A: a 1px gradient border whose glint turns on hover. */
+.ment-card {
+  border: 1px solid transparent;
+  background:
+    radial-gradient(120% 90% at 85% 10%, #bed6d81f, transparent 60%) padding-box,
+    repeating-linear-gradient(0deg, transparent 0 39px, #ffffff0a 39px 40px) padding-box,
+    repeating-linear-gradient(90deg, transparent 0 39px, #ffffff0a 39px 40px) padding-box,
+    linear-gradient(#0b0c0d, #0b0c0d) padding-box,
+    conic-gradient(from var(--rim-a), #3d4242 0deg 66deg, var(--rim-cool, #9fb8bb) 83deg, var(--rim-peak, #f4f6f3) 91deg, var(--rim-warm, #c9b79a) 100deg, #3d4242 117deg 246deg, var(--rim-cool, #9fb8bb) 263deg, var(--rim-peak, #f4f6f3) 271deg, var(--rim-warm, #c9b79a) 280deg, #3d4242 297deg) border-box;
+  box-shadow: 0 30px 60px -30px #000c;
+  transition: --rim-a 900ms cubic-bezier(.22,1,.36,1), transform 260ms var(--ease-out), box-shadow 260ms var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ment-card:hover { --rim-a: 60deg; box-shadow: 0 40px 70px -30px #000e; }
+}
+.ment-card:focus-visible { --rim-a: 60deg; }
+@media (prefers-reduced-motion: reduce) { .ment-card { transition: none; } }
+
+/* Section labels a touch larger; the mentorship label is shown again. */
+.mentorship-section > .section-rail, .process-section > .section-rail, .contact-section > .section-rail, .home-tools-title > .tools-label { font-size: 17px !important; color: var(--secondary) !important; }
+.mentorship-section > .section-rail { display: block !important; }
+
+/* Touch screens: the rim glint turns once when the card scrolls into view. */
+@media (hover: none) { .ment-card.is-in { --rim-a: 60deg; } .ment-card { transition-duration: 1400ms, 260ms, 260ms; } }
+
+/* Framework: steps fade up one after another and each rule is drawn left to right, like a pen. */
+.reveal-ready .process-steps li { position: relative; border-bottom-color: transparent !important; opacity: 0; transform: translateY(14px);
+  transition: opacity 600ms var(--ease-out), transform 700ms var(--ease-out); }
+.reveal-ready .process-steps li::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; width: auto !important; background: var(--line) !important;
+  transform: scaleX(0); transform-origin: left; transition: transform 900ms cubic-bezier(.65,0,.35,1); }
+.reveal-ready .process-steps.is-in li { opacity: 1; transform: none; }
+.reveal-ready .process-steps.is-in li::after { transform: scaleX(1); }
+.process-steps li:nth-child(2), .process-steps li:nth-child(2)::after { transition-delay: 140ms; }
+.process-steps li:nth-child(3), .process-steps li:nth-child(3)::after { transition-delay: 280ms; }
+.process-steps li:nth-child(4), .process-steps li:nth-child(4)::after { transition-delay: 420ms; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal-ready .process-steps li { transform: none; transition: opacity 300ms; }
+  .reveal-ready .process-steps li::after { transform: none; transition: none; }
+}

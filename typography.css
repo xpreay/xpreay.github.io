@@ -1,0 +1,73 @@
+/* Text layout pass (home). One grid for every text section: the label sits in a fixed left column,
+   all copy starts on the same line after it. Headlines are two-tone (the second half quieter, as
+   Apple does), the first paragraph of a block is a larger lead, and copy is held to ~60 characters.
+   Loaded last on the home page. Words are unchanged. */
+:root { --rail: 200px; --gutter: 48px; --gap: 24px; }
+
+.mentorship-section, .home-tools-title, .process-section, .contact-section {
+  display: grid !important; grid-template-columns: var(--rail) minmax(0, 1fr) !important;
+  column-gap: var(--gap) !important; row-gap: 0 !important; align-items: start !important;
+  padding-left: var(--gutter) !important; padding-right: var(--gutter) !important;
+}
+.mentorship-section > .section-rail, .process-section > .section-rail, .contact-section > .section-rail, .home-tools-title > .tools-label {
+  grid-column: 1 !important; grid-row: 1 / span 6; padding: 14px 0 0 !important; margin: 0 !important; border: 0 !important;
+  font-size: 14px; color: var(--muted);
+}
+.mentorship-section > :not(.section-rail), .process-section > :not(.section-rail), .contact-section > :not(.section-rail), .home-tools-title > :not(.tools-label) { grid-column: 2 !important; min-width: 0; }
+
+/* Section intros: headline, then a lead held to a readable measure, both on the content line. */
+.mentorship-section > .section-intro, .process-section > .section-intro { display: block !important; padding: 0 0 56px !important; }
+.mentorship-section .section-intro h2, .process-section .section-intro h2, .home-tools-title h2, .contact-layout h2 {
+  margin: 0 0 28px !important; max-width: 20ch; font-size: clamp(40px, 4.6vw, 68px) !important; line-height: 1.04 !important; letter-spacing: -.035em !important; font-weight: 600 !important; text-wrap: balance;
+}
+.mentorship-section .section-intro > p, .process-section .section-intro p, .home-tools-title p, .contact-layout p {
+  margin: 0 !important; max-width: 40ch !important; font-size: clamp(19px, 1.5vw, 22px) !important; line-height: 1.5 !important; color: var(--secondary); text-wrap: pretty;
+}
+.home-tools-title { padding-top: 112px !important; padding-bottom: 48px !important; }
+.home-tools-title p { margin-top: 0 !important; }
+
+/* Two-tone headlines: the second half takes the solid muted token (no transparency), so the
+   letters stay crisp and contrast is fixed: dark #9fa8a4 on #101112 ≈ 7.9:1, light #58625c on
+   #f5f5f1 ≈ 6:1, both above WCAG AA. The "O mnie" block is always black, so it keeps the dark value. */
+.h-dim { color: var(--muted); }
+.about-section .h-dim { color: #9fa8a4; }
+
+/* Mentorship: the copy column next to the map, quieter and narrower. */
+.mentorship-layout { grid-column: 2 !important; }
+.mentorship-copy h3 { font-size: 24px !important; letter-spacing: -.015em; margin-bottom: 14px !important; }
+.mentorship-copy p { max-width: 42ch; font-size: 17px !important; line-height: 1.6 !important; }
+.mentorship-copy p + p { color: var(--text); font-weight: 500; }
+
+/* Process: steps sit on the content line under the intro instead of a separate half. */
+.process-section .process-steps { grid-column: 2 !important; }
+
+/* Contact: headline, lead and the mail row all start on the same line. */
+.contact-layout { display: block !important; padding: 0 !important; }
+.contact-layout > div { display: grid !important; gap: 28px; margin: 0 !important; padding: 0 !important; width: auto !important; max-width: none !important; grid-column: auto !important; }
+.contact-layout p { max-width: 36ch !important; }
+.contact-link { max-width: 760px; }
+
+/* About (inside the logo scene): lead first, quieter second paragraph, readable measure. */
+.about-copy h2 { font-weight: 600 !important; letter-spacing: -.035em !important; text-wrap: balance; }
+.about-copy p { max-width: 46ch !important; }
+.about-copy h2 + p { font-size: clamp(19px, 1.45vw, 21px) !important; line-height: 1.5 !important; color: var(--text) !important; }
+.about-copy h2 + p + p { color: var(--secondary) !important; }
+
+@media (max-width: 1100px) { :root { --rail: 150px; --gutter: 32px; } }
+@media (max-width: 800px) {
+  .mentorship-section, .home-tools-title, .process-section, .contact-section { display: block !important; padding-left: 24px !important; padding-right: 24px !important; }
+  .mentorship-section > .section-rail, .process-section > .section-rail, .contact-section > .section-rail, .home-tools-title > .tools-label { display: block; padding: 0 0 18px !important; }
+  .mentorship-section .section-intro h2, .process-section .section-intro h2, .home-tools-title h2, .contact-layout h2 { font-size: clamp(34px, 9vw, 46px) !important; margin-bottom: 20px !important; }
+  .mentorship-section .section-intro > p, .process-section .section-intro p, .home-tools-title p, .contact-layout p { font-size: 18px !important; }
+  .mentorship-section > .section-intro, .process-section > .section-intro { padding-bottom: 36px !important; }
+  .home-tools-title { padding-top: 64px !important; padding-bottom: 32px !important; }
+  .about-copy h2 + p { font-size: 18px !important; }
+}
+
+/* Old section-rhythm rules pin children to specific grid rows/columns; reset them so everything
+   flows top to bottom on the content line. */
+.mentorship-section > :not(.section-rail), .process-section > :not(.section-rail), .contact-section > :not(.section-rail), .home-tools-title > :not(.tools-label) { grid-row: auto !important; }
+.contact-layout > div { grid-template-columns: none !important; }
+.contact-layout > div > * { grid-column: auto !important; }
+.process-section .process-steps { margin-top: 8px; }
+.home-tools-title h2, .home-tools-title p { grid-column: 2 !important; }

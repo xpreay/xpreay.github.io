@@ -460,7 +460,7 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.7));
   const group = new THREE.Group();
   scene.add(group);
-  const grid = new THREE.GridHelper(55, 22, 0x2c3436, 0x1a2022);
+  const grid = new THREE.GridHelper(55, 22, ...(document.documentElement.dataset.theme === "light" ? [0xb3b2a9, 0xcfcec5] : [0x2c3436, 0x1a2022]));
   grid.position.y = -8;
   scene.add(grid);
   const raycaster = new THREE.Raycaster();
@@ -593,7 +593,7 @@
         });
       }
     }
-    if (viewState.showMedian) group.add(lineObject(medianPath, viewState.mode === "2d" ? .35 : 0, 0xeef3ff, .95));
+    if (viewState.showMedian) group.add(lineObject(medianPath, viewState.mode === "2d" ? .35 : 0, (document.documentElement.dataset.theme === "light" ? 0x1b1c1a : 0xeef3ff), .95));
     if (viewState.showSelected && pathsData[selectedPath]) group.add(lineObject(pathsData[selectedPath].curve, viewState.mode === "2d" ? .55 : 1.1, 0xcdb487, 1));
   }
   function resize() {

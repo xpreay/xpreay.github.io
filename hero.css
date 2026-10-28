@@ -29,24 +29,24 @@
 
 /* Light material uses the same live current field; dark rendering stays untouched. */
 :root[data-theme=light] .home-hero{
- background:#fff;color:#151918;--text:#151918;--secondary:#46504c;--muted:#56615b;
- --surface:#f7f9f7;--control-line:#69766f;--glass-arrow:#354b4009;
+ background:var(--bg);color:#151918;--text:#151918;--secondary:#46504c;--muted:#56615b;
+ --surface:#efeee8;--control-line:#69766f;--glass-arrow:#354b4009;
 }
 :root[data-theme=light] .home-hero .terrain{
- background:#fff;
+ background:var(--bg);
 }
 :root[data-theme=light] .home-hero .terrain canvas{
- filter:invert(1) brightness(1.019);opacity:.55;
+ filter:invert(1) brightness(1.019);opacity:.55;mix-blend-mode:multiply;
 }
 :root[data-theme=light] .home-hero::after{
- background:linear-gradient(90deg,#fffffff5,#ffffffc9 36%,#ffffff26 72%,transparent),linear-gradient(0deg,#ffffffb3,transparent 24%);
+ background:linear-gradient(90deg,#e9e8e2f5,#e9e8e2c9 36%,#e9e8e226 72%,transparent),linear-gradient(0deg,#e9e8e2b3,transparent 24%);
 }
 :root[data-theme=light] .home-hero .glass-button:not(.opal){
  --rim-peak:#263b34;--rim-cool:#7e9da5;--rim-warm:#9d91ac;
 }
 :root[data-theme=light] .home-hero .glass-button:not(.opal) .glass-face{
- background:linear-gradient(155deg,#ffffffcf,transparent 65%),var(--surface);
+ background:linear-gradient(155deg,#f7f6f1cf,transparent 65%),var(--surface);
 }
 @media(max-width:800px){
- :root[data-theme=light] .home-hero::after{background:linear-gradient(180deg,#fffffff5,#ffffffd9 48%,#ffffff40 80%,#ffffffb3)}
+ :root[data-theme=light] .home-hero::after{background:linear-gradient(180deg,#e9e8e2f2,#e9e8e2d1 48%,#e9e8e240 80%,#e9e8e2b3)}
 }

@@ -117,3 +117,24 @@
   .reveal-ready .process-steps li { transform: none; transition: opacity 300ms; }
   .reveal-ready .process-steps li::after { transform: none; transition: none; }
 }
+
+/* Light theme: Framework and the mentorship card follow the theme (they were hard-coded dark). */
+:root[data-theme="light"] .process-section { background: var(--panel); color: var(--text); --secondary: #48514d; --muted: #58625c; --line: #b9c0bb; }
+:root[data-theme="light"] .ment-card {
+  color: #1a1d1c;
+  background:
+    radial-gradient(120% 90% at 85% 10%, #435e6514, transparent 60%) padding-box,
+    repeating-linear-gradient(0deg, transparent 0 39px, #1a1d1c0d 39px 40px) padding-box,
+    repeating-linear-gradient(90deg, transparent 0 39px, #1a1d1c0d 39px 40px) padding-box,
+    linear-gradient(#f1f0ea, #f1f0ea) padding-box,
+    conic-gradient(from var(--rim-a), #c9cfc9 0deg 66deg, #8fa6aa 83deg, #4b5552 91deg, #b39a72 100deg, #c9cfc9 117deg 246deg, #8fa6aa 263deg, #4b5552 271deg, #b39a72 280deg, #c9cfc9 297deg) border-box;
+  box-shadow: 0 30px 60px -34px #1a1d1c40;
+}
+:root[data-theme="light"] .ment-top { color: #58625c; }
+:root[data-theme="light"] .ment-src { background: #1a1d1c0a; box-shadow: inset 0 0 0 1px #1a1d1c1f; color: #1a1d1c; }
+:root[data-theme="light"] .ment-tag { color: #1a1d1c; }
+:root[data-theme="light"] .ment-tag .h-dim { color: #58625c; }
+:root[data-theme="light"] .ment-play { background: #1a1d1c; color: #f5f5f1; box-shadow: 0 0 0 10px #1a1d1c0f, 0 12px 30px #1a1d1c33; }
+:root[data-theme="light"] .ment-route { border-top-color: #1a1d1c1f; color: #1a1d1c; }
+:root[data-theme="light"] .ment-route li + li { border-left-color: #1a1d1c1f; }
+:root[data-theme="light"] .ment-route b { color: #58625c; }

@@ -4,6 +4,14 @@
    reduced motion. Depends on sessions-globe-data.js (window.XPREAY_GLOBE_DOTS). */
 (() => {
   const D = Math.PI / 180;
+  // Colour sets for the dark and the light theme, picked every frame so a theme switch is live.
+  const C = {};
+  const themeColors = () => {
+    const l = document.documentElement.dataset.theme === 'light';
+    C.acc = l ? '63,90,97' : '190,214,216'; C.txt = l ? '27,28,26' : '239,240,237'; C.dim = l ? '120,128,124' : '150,170,184';
+    C.hi = l ? '40,52,58' : '244,250,255'; C.hi2 = l ? '90,115,125' : '169,203,217'; C.bg = l ? '233,232,226' : '8,10,14';
+  };
+  themeColors();
   const CITIES = [
     { name: 'New York', short: 'NY', lat: 40.71, lon: -74.01, tz: 'America/New_York', open: [9.5, 16], color: '#d4a184' },
     { name: 'London', short: 'London', lat: 51.51, lon: -0.13, tz: 'Europe/London', open: [8, 16.5], color: '#86b0cb' },
@@ -100,19 +108,20 @@
       }
       const g = layout();
       const sunRot = project(sun, rotation, { cx: 0, cy: 0, r: 1 });
+      themeColors();
       ctx.clearRect(0, 0, width, height);
 
       // Glass body: faint fill and a soft shadow edge.
       const body = ctx.createRadialGradient(g.cx - g.r * 0.35, g.cy - g.r * 0.4, g.r * 0.1, g.cx, g.cy, g.r);
-      body.addColorStop(0, 'rgba(190,214,216,.075)');
-      body.addColorStop(0.7, 'rgba(190,214,216,.025)');
-      body.addColorStop(1, 'rgba(190,214,216,0)');
+      body.addColorStop(0, `rgba(${C.acc},.075)`);
+      body.addColorStop(0.7, `rgba(${C.acc},.025)`);
+      body.addColorStop(1, `rgba(${C.acc},0)`);
       ctx.fillStyle = body;
       ctx.beginPath(); ctx.arc(g.cx, g.cy, g.r, 0, Math.PI * 2); ctx.fill();
 
       // Graticule, front half only.
       ctx.lineWidth = 1;
-      ctx.strokeStyle = 'rgba(239,240,237,.055)';
+      ctx.strokeStyle = `rgba(${C.txt},.055)`;
       for (let lat = -60; lat <= 60; lat += 30) line((t) => vec(lat, t * 360 - 180), g);
       for (let lon = -180; lon < 180; lon += 30) line((t) => vec(t * 164 - 82, lon), g);
 
@@ -121,7 +130,7 @@
       for (const v of dots) {
         const p = project(v, rotation, g);
         if (p.z < 0) {
-          ctx.fillStyle = 'rgba(190,214,216,.07)';
+          ctx.fillStyle = `rgba(${C.acc},.07)`;
           ctx.fillRect(p.x - 0.6, p.y - 0.6, 1.2, 1.2);
           continue;
         }
@@ -129,22 +138,22 @@
         const day = Math.max(0, Math.min(1, light * 4 + 0.5));
         const depth = 0.35 + 0.65 * p.z;
         ctx.fillStyle = day > 0.5
-          ? `rgba(239,240,237,${(0.4 + 0.55 * day) * depth})`
-          : `rgba(150,170,184,${(0.32 + 0.2 * day) * depth})`;
+          ? `rgba(${C.txt},${(0.4 + 0.55 * day) * depth})`
+          : `rgba(${C.dim},${(0.32 + 0.2 * day) * depth})`;
         ctx.fillRect(p.x - size / 2, p.y - size / 2, size, size);
       }
 
       // Rim with a slow glint that travels around it, like the A button.
       ctx.beginPath(); ctx.arc(g.cx, g.cy, g.r, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(239,240,237,.22)'; ctx.lineWidth = 1; ctx.stroke();
+      ctx.strokeStyle = `rgba(${C.txt},.22)`; ctx.lineWidth = 1; ctx.stroke();
       const glint = reduced.matches ? -0.9 : (now / 7000) % (Math.PI * 2);
       const rim = ctx.createConicGradient ? ctx.createConicGradient(glint, g.cx, g.cy) : null;
       if (rim) {
-        rim.addColorStop(0, 'rgba(244,250,255,0)');
-        rim.addColorStop(0.06, 'rgba(244,250,255,.75)');
-        rim.addColorStop(0.12, 'rgba(169,203,217,.25)');
-        rim.addColorStop(0.2, 'rgba(244,250,255,0)');
-        rim.addColorStop(1, 'rgba(244,250,255,0)');
+        rim.addColorStop(0, `rgba(${C.hi},0)`);
+        rim.addColorStop(0.06, `rgba(${C.hi},.75)`);
+        rim.addColorStop(0.12, `rgba(${C.hi2},.25)`);
+        rim.addColorStop(0.2, `rgba(${C.hi},0)`);
+        rim.addColorStop(1, `rgba(${C.hi},0)`);
         ctx.beginPath(); ctx.arc(g.cx, g.cy, g.r, 0, Math.PI * 2);
         ctx.strokeStyle = rim; ctx.lineWidth = 1.5; ctx.stroke();
       }
@@ -159,13 +168,13 @@
           started ? ctx.lineTo(p.x, p.y) : ctx.moveTo(p.x, p.y);
           started = true;
         }
-        ctx.strokeStyle = 'rgba(190,214,216,.32)'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.strokeStyle = `rgba(${C.acc},.32)`; ctx.lineWidth = 1; ctx.stroke();
         if (reduced.matches) return;
         const t = ((now / 4200) + k / ROUTE.length) % 1;
         const p = project(slerp(cityVecs[a], cityVecs[b], t), rotation, g);
         if (p.z < 0) return;
         const a2 = Math.sin(t * Math.PI);
-        ctx.fillStyle = `rgba(244,250,255,${0.85 * a2})`;
+        ctx.fillStyle = `rgba(${C.hi},${0.85 * a2})`;
         ctx.beginPath(); ctx.arc(p.x, p.y, 1.8, 0, Math.PI * 2); ctx.fill();
       });
 
@@ -187,9 +196,9 @@
         const label = `${city.short} ${state.label}`;
         const w = ctx.measureText(label).width;
         const lx = p.x + 14 + w + 8 > width ? p.x - 14 - w : p.x + 14, ly = p.y - 1; // flip near the edge
-        ctx.fillStyle = `rgba(8,10,14,${0.72 * fade})`;
+        ctx.fillStyle = `rgba(${C.bg},${0.72 * fade})`;
         ctx.fillRect(lx - 6, ly - 11, w + 12, 22);
-        ctx.fillStyle = `rgba(239,240,237,${0.95 * fade})`;
+        ctx.fillStyle = `rgba(${C.txt},${0.95 * fade})`;
         ctx.fillText(label, lx, ly);
       });
       canvas.dataset.sunFacing = sunRot.z > 0 ? 'day' : 'night';

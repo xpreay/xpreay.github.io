@@ -1,0 +1,6 @@
+/* Legal band under the footer: the partner disclosure, the CFD risk warning and the legal note link. */
+.legal-band { display: grid; gap: 10px; padding: 20px 28px 28px; border-top: 1px solid var(--line); font-size: 14px; line-height: 1.55; color: var(--muted); }
+.legal-band p { margin: 0; max-width: 110ch; }
+.legal-band strong { color: var(--secondary); font-weight: 600; }
+.legal-band a { color: var(--secondary); text-underline-offset: 3px; }
+@media (max-width: 800px) { .legal-band { padding: 20px 24px 120px; } footer { padding-bottom: 24px !important; } }

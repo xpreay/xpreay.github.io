@@ -224,6 +224,7 @@ const T_END = 5.3;          // do końca smugi światła; dalej sekcja przechodz
 let tNow = 0, tDrawn = -1, visible = false, size = '', raf = 0, autoStart = null;
 // BLOKADA przy pierwszym wejściu od góry (właściciel: na telefonie dało się przelecieć w sekundę): strona staje na początku sekcji,
 // scena gra sama (~4,6 s), potem przewijanie wraca. Raz na odwiedziny, tylko od góry; puszcza sama po maks. ~5,5 s albo klawiszem Esc.
+const USE_LOCK = false;   // właściciel: czysto za scrollem (pierwsza wersja) + dłuższy scroll; blokada/autoodtwarzanie wyłączone
 let locked = false, played = false, lockY = 0, lockAt = 0, prevTop = Infinity, glideFrom = 0, glideAt = 0, pPlayed = 0.3;
 const GLIDE = 650;   // płynny dojazd na początek sceny (ms), bez skoków
 const stop = (e) => { if (locked) e.preventDefault(); };
@@ -240,11 +241,11 @@ function tick() { raf = 0; if (!visible) return;
   // autoodtwarzanie: gdy sekcja wejdzie w kadr, scena sama gra w tempie filmu (ok. 4,6 s) — szybkie przewijanie może ją tylko wyprzedzić;
   // powrót nad sekcję (progress = 0) zeruje, więc przy kolejnym wejściu gra od nowa
   const now = performance.now();
-  if (progress > 0.002 && autoStart === null) autoStart = now;
+  if (USE_LOCK && progress > 0.002 && autoStart === null) autoStart = now;
   if (progress <= 0.0005) autoStart = null;
   const top = sequence.getBoundingClientRect().top;
   // łapie, gdy sekcja zbliża się od góry (ćwierć ekranu przed startem) — także po szybkim machnięciu za daleko
-  if (!played && !locked && prevTop > top && top <= innerHeight * 0.25 && top > -sequence.offsetHeight * 0.5) { lock(); autoStart = now - (tNow / 1.15) * 1000; }
+  if (USE_LOCK && !played && !locked && prevTop > top && top <= innerHeight * 0.25 && top > -sequence.offsetHeight * 0.5) { lock(); autoStart = now - (tNow / 1.15) * 1000; }
   prevTop = top;
   if (locked) { const g = inOutC((now - glideAt) / GLIDE), y = lerp(glideFrom, lockY, g); if (Math.abs(scrollY - y) > 0.5) scrollTo(0, y); }   // płynny dojazd, potem trzyma
   const autoT = autoStart === null ? 0 : ((now - autoStart) / 1000) * 1.15;

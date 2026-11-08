@@ -235,5 +235,10 @@ function tick() { raf = 0; if (!visible) return;
 new IntersectionObserver((e) => { visible = e[0].isIntersecting; if (visible && !raf) raf = requestAnimationFrame(tick); }, { rootMargin: '200px' }).observe(sequence);
 document.documentElement.classList.add('cine');
 window.__xpreayCine = (t) => { resize(); frame(t); return t; }; // podgląd/test: klatka dla czasu sceny
+// eksport statycznego logo (kadr z góry, prawie ortograficzny, dokładnie w obrysie 1000×623) — do wersji 2D/układu z tekstem
+window.__xpreayStill = (t, w = 2400) => { const h = Math.round(w * 623 / 1000); frame(t);
+  renderer.setPixelRatio(1); renderer.setSize(w, h, false); composer.setPixelRatio(1); composer.setSize(w, h); bloom.setSize(w, h);
+  const half = 1.869; camera.aspect = w / h; camera.fov = 2 * Math.atan(half / 60) * 180 / Math.PI; camera.position.set(0, 0, 60 + TOP); camera.up.set(0, 1, 0); camera.lookAt(0, 0, 0); camera.updateProjectionMatrix();
+  bokeh.uniforms.aperture.value = 0; const fog = world.fog; world.fog = null; finish.enabled = false; composer.render(); const url = canvas.toDataURL('image/png'); world.fog = fog; finish.enabled = true; size = ''; return url; };
 addEventListener('resize', () => { size = ''; });
 }

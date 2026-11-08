@@ -96,3 +96,8 @@
 /* Dimension annotations share the notebook handwriting. */
 .draft-measure{font:italic 18px 'Segoe Print','Bradley Hand',cursive;letter-spacing:.01em;fill:#b6bdb0;stroke:#050606;stroke-width:3px;paint-order:stroke fill;stroke-linejoin:round}
 @media(max-width:800px){.draft-measure{font-size:26px}}
+
+/* Kinowa wersja 3D (logo-cine.js): płótno pod całą sceną, dawny szkic 2D ukryty. */
+.logo-cine{position:absolute;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none}
+.cine .logo-sequence .draft-geometry{display:none}
+.cine .logo-sequence .logo-stage,.cine .logo-sequence .brand-statement,.cine .logo-sequence .about-copy{z-index:1}

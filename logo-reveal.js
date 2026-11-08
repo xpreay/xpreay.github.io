@@ -90,7 +90,9 @@ stage.style.opacity=String(staticMode?1:1-statementIn+ramp(progress,.855,.90));
 statement.style.opacity=String(staticMode?0:statementIn*(1-statementOut));
 statement.style.transform=`translate(-50%,-50%) scale(${.96+.04*statementIn})`;
 words.forEach((el,i)=>{const reveal=ramp(progress,.615+i*.055,.685+i*.055);el.style.opacity=String(reveal);el.style.transform=`translateY(${(1-reveal)*24}px)`;});
-body.style.opacity=String(metal);edge.style.opacity=String(metal);aura.style.opacity=String(metal*.25);
+// Kinowa wersja 3D (logo-cine.js) sama rysuje szkic i wyłania logo; logo 2D wraca dopiero w końcowym układzie z tekstem.
+const cine=document.documentElement.classList.contains('cine'),mOp=cine?ramp(progress,.855,.9):metal;
+body.style.opacity=String(mOp);edge.style.opacity=String(mOp);aura.style.opacity=String(mOp*.25);
 paths.forEach((el,i)=>{
  const start=.04+(i%5)*.065+Math.floor(i/5)*.03,n=ramp(p,start,start+.19),[a,b]=el._ends;
  const x=a[0]+(b[0]-a[0])*n,y=a[1]+(b[1]-a[1])*n;

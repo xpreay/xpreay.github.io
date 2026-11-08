@@ -16,9 +16,9 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const scene = document.querySelector('.brand-reveal'), sequence = document.querySelector('.logo-sequence');
-const reduced = matchMedia('(prefers-reduced-motion:reduce)'), wide = { matches: !matchMedia('(pointer:coarse)').matches || innerWidth >= 900 }; // komputer z myszą (dowolna szerokość) albo duży ekran; telefony/tablety = 2D
+const reduced = matchMedia('(prefers-reduced-motion:reduce)'); // telefony i tablety dostają tę samą scenę 3D, 1:1
 const probe = document.createElement('canvas');
-if (scene && sequence && !reduced.matches && wide.matches && probe.getContext('webgl2')) init();
+if (scene && sequence && !reduced.matches && probe.getContext('webgl2')) init();
 
 function init() {
 // ——— narzędzia ———
@@ -191,7 +191,7 @@ function frame(t) {
   // kamera: za grotem na zejściu, potem szeroki tor i crane do ujęcia z góry
   const dA = inOutC(slice(t, 0.1, 2.9)), tA = v3(W2(150, 590, 0), W2(470, 250, 0), dA), side = [0.707, -0.707];
   const offA = v3([side[0] * 3.0, side[1] * 3.0, 1.45], [side[0] * 3.6, side[1] * 3.6, 2.1], dA), camA = [tA[0] + offA[0], tA[1] + offA[1], tA[2] + offA[2]];
-  const kB = inOutC(slice(t, 2.35, 4.15)), dist = (land ? 13.2 : 22.5) * (1 - 0.018 * ramp(t, 4.2, 6.3));
+  const kB = inOutC(slice(t, 2.35, 4.15)), fovF = land ? 24 : 32, fit = 3.75 / Math.tan(Math.atan(Math.tan(fovF * Math.PI / 360) * (W / H))), dist = Math.max(land ? 13.2 : 0, fit) * (1 - 0.018 * ramp(t, 4.2, 6.3)); // odległość z proporcji ekranu: całe logo zawsze w kadrze (telefon, tablet, komputer)
   let pos = v3(camA, [0, -0.12 * dist / 13, dist], kB), target = v3(tA, [0, 0, DEPTH * 0.5], kB), up = v3([0, 0, 1], [0, 1, 0], ramp(kB, 0.15, 0.85)), fov = lerp(land ? 27 : 36, land ? 24 : 32, kB), aper = lerp(0.0016, 0.0003, kB);
   const kM = inOutC(slice(t, 0.8, 2.0));
   if (kM < 1) { const sm = [0, 0.04, 0.08, 0.12].map((o) => heroTip(t - o)), tip = W2(sm.reduce((a, q) => a + q[0], 0) / 4, sm.reduce((a, q) => a + q[1], 0) / 4, 0), push = 1 - 0.15 * inOutC(slice(t, 0, 0.6));

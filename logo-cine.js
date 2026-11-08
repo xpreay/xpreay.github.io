@@ -222,6 +222,15 @@ function frame(t) {
 // ——— scroll → czas sceny (z bezwładnością), render tylko gdy coś się zmienia ———
 const T_END = 5.3;          // do końca smugi światła; dalej sekcja przechodzi w hasło i tekst (logo-reveal.js)
 let tNow = 0, tDrawn = -1, visible = false, size = '', raf = 0, autoStart = null;
+// BLOKADA przy pierwszym wejściu od góry (właściciel: na telefonie dało się przelecieć w sekundę): strona staje na początku sekcji,
+// scena gra sama (~4,6 s), potem przewijanie wraca. Raz na odwiedziny, tylko od góry; puszcza sama po maks. ~5,5 s albo klawiszem Esc.
+let locked = false, played = false, lockY = 0, lockAt = 0, prevTop = Infinity;
+const stop = (e) => { if (locked) e.preventDefault(); };
+const keys = (e) => { if (!locked) return; if (e.key === 'Escape') { unlock(); return; } if ([' ', 'PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End'].includes(e.key)) e.preventDefault(); };
+function lock() { locked = true; lockAt = performance.now(); lockY = sequence.getBoundingClientRect().top + scrollY; scrollTo(0, lockY);
+  document.documentElement.style.overflow = 'hidden'; addEventListener('wheel', stop, { passive: false }); addEventListener('touchmove', stop, { passive: false }); addEventListener('keydown', keys); }
+function unlock() { locked = false; played = true; document.documentElement.style.overflow = '';
+  removeEventListener('wheel', stop); removeEventListener('touchmove', stop); removeEventListener('keydown', keys); }
 function resize() { const w = canvas.clientWidth, h = canvas.clientHeight, dpr = Math.min(devicePixelRatio || 1, 1.5), key = `${w}x${h}x${dpr}`; if (key === size || !w || !h) return false;
   size = key; renderer.setPixelRatio(dpr); renderer.setSize(w, h, false); composer.setPixelRatio(dpr); composer.setSize(w, h); bloom.setSize(w * dpr, h * dpr); lineMats.forEach((m) => m.resolution.set(w * dpr, h * dpr)); return true; }
 function tick() { raf = 0; if (!visible) return;
@@ -231,7 +240,12 @@ function tick() { raf = 0; if (!visible) return;
   const now = performance.now();
   if (progress > 0.002 && autoStart === null) autoStart = now;
   if (progress <= 0.0005) autoStart = null;
+  const top = sequence.getBoundingClientRect().top;
+  if (!played && !locked && prevTop > 0 && top <= 0) { lock(); autoStart = now - (tNow / 1.15) * 1000; }   // dojście do sekcji od góry (też szybkim machnięciem)
+  prevTop = top;
+  if (locked && Math.abs(scrollY - lockY) > 1) scrollTo(0, lockY);                                         // bezwładność przewijania na telefonie
   const autoT = autoStart === null ? 0 : ((now - autoStart) / 1000) * 1.15;
+  if (locked && (autoT >= T_END + 0.15 || now - lockAt > 5500)) unlock();
   const target = Math.min(T_END, Math.max(T_END * clamp(progress / 0.6), autoT));
   tNow += (target - tNow) * 0.06;   // większa bezwładność: scena płynie za scrollem, nie skacze
   if (Math.abs(target - tNow) < 0.0005) tNow = target;

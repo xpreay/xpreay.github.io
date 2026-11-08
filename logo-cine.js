@@ -16,7 +16,7 @@ import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 
 const scene = document.querySelector('.brand-reveal'), sequence = document.querySelector('.logo-sequence');
-const reduced = matchMedia('(prefers-reduced-motion:reduce)'), wide = matchMedia('(min-width:900px)');
+const reduced = matchMedia('(prefers-reduced-motion:reduce)'), wide = { matches: !matchMedia('(pointer:coarse)').matches || innerWidth >= 900 }; // komputer z myszą (dowolna szerokość) albo duży ekran; telefony/tablety = 2D
 const probe = document.createElement('canvas');
 if (scene && sequence && !reduced.matches && wide.matches && probe.getContext('webgl2')) init();
 

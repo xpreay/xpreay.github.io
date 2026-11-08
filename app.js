@@ -1,7 +1,8 @@
 const root=document.documentElement;
 const storage={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v)}catch{}}};
 function setTheme(theme){root.dataset.theme=theme;storage.set('xpreay-theme',theme);document.querySelectorAll('.theme-toggle').forEach(b=>{b.querySelector('span').textContent=theme==='dark'?'Jasny motyw':'Ciemny motyw';b.setAttribute('aria-label',theme==='dark'?'Włącz jasny motyw':'Włącz ciemny motyw')});document.querySelector('meta[name="theme-color"]').content=theme==='dark'?'#101112':'#f5f5f1'}
-setTheme(storage.get('xpreay-theme')==='light'?'light':'dark');
+// Tryb jasny chwilowo wyłączony (właściciel, 08.11.2026): zawsze ciemny. Przywrócenie: setTheme(storage.get('xpreay-theme')==='light'?'light':'dark') + usunąć ukrycie .theme-toggle w styles.css.
+setTheme('dark');
 document.querySelectorAll('.theme-toggle').forEach(b=>b.addEventListener('click',()=>setTheme(root.dataset.theme==='dark'?'light':'dark')));
 function setHand(hand){root.dataset.hand=hand;storage.set('xpreay-hand',hand);document.querySelectorAll('[name=hand]').forEach(i=>i.checked=i.value===hand)}
 setHand(storage.get('xpreay-hand')==='left'?'left':'right');document.querySelectorAll('[name=hand]').forEach(i=>i.addEventListener('change',()=>setHand(i.value)));

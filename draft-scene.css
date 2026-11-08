@@ -105,3 +105,6 @@
 /* Logo w układzie z tekstem i w wersji 2D: render czarnego chromu z kinowej sceny (Blueprint Chrome) zamiast gradientu. */
 .brand-reveal .logo-body{background:#050606 url("assets/logo-chrome.webp") center/100% 100% no-repeat}
 :root[data-theme="light"] .logo-body,:root[data-theme="light"] .logo-sequence .logo-body{background:#050606 url("assets/logo-chrome.webp") center/100% 100% no-repeat;animation:none}
+
+/* Scena 3D (logo-cine.js): dłuższy dystans przewijania, żeby efekt dało się obejrzeć (właściciel: „za szybko”). */
+html.cine .logo-sequence{height:420svh;min-height:2600px}

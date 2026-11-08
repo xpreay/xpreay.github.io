@@ -29,3 +29,6 @@
 @media(max-width:800px){.filters{padding-inline:16px;gap:12px;justify-content:space-between}.filters button{font-size:16px}.filters button span{display:none}}
 html[data-hand=left] .menu-top{flex-direction:row-reverse}
 @media(max-width:800px){.intro-copy{padding-block:28px}.intro h1{margin-bottom:22px}}
+
+/* Tryb jasny chwilowo wyłączony (08.11.2026): przełącznik ukryty. */
+.theme-toggle{display:none!important}

@@ -221,13 +221,20 @@ function frame(t) {
 
 // ——— scroll → czas sceny (z bezwładnością), render tylko gdy coś się zmienia ———
 const T_END = 5.3;          // do końca smugi światła; dalej sekcja przechodzi w hasło i tekst (logo-reveal.js)
-let tNow = 0, tDrawn = -1, visible = false, size = '', raf = 0;
+let tNow = 0, tDrawn = -1, visible = false, size = '', raf = 0, autoStart = null;
 function resize() { const w = canvas.clientWidth, h = canvas.clientHeight, dpr = Math.min(devicePixelRatio || 1, 1.5), key = `${w}x${h}x${dpr}`; if (key === size || !w || !h) return false;
   size = key; renderer.setPixelRatio(dpr); renderer.setSize(w, h, false); composer.setPixelRatio(dpr); composer.setSize(w, h); bloom.setSize(w * dpr, h * dpr); lineMats.forEach((m) => m.resolution.set(w * dpr, h * dpr)); return true; }
 function tick() { raf = 0; if (!visible) return;
   const progress = parseFloat(scene.dataset.progress || '0') || 0;
-  const target = T_END * clamp(progress / 0.6);
-  tNow += (target - tNow) * 0.12; if (Math.abs(target - tNow) < 0.0005) tNow = target;
+  // autoodtwarzanie: gdy sekcja wejdzie w kadr, scena sama gra w tempie filmu (ok. 4,6 s) — szybkie przewijanie może ją tylko wyprzedzić;
+  // powrót nad sekcję (progress = 0) zeruje, więc przy kolejnym wejściu gra od nowa
+  const now = performance.now();
+  if (progress > 0.002 && autoStart === null) autoStart = now;
+  if (progress <= 0.0005) autoStart = null;
+  const autoT = autoStart === null ? 0 : ((now - autoStart) / 1000) * 1.15;
+  const target = Math.min(T_END, Math.max(T_END * clamp(progress / 0.6), autoT));
+  tNow += (target - tNow) * 0.06;   // większa bezwładność: scena płynie za scrollem, nie skacze
+  if (Math.abs(target - tNow) < 0.0005) tNow = target;
   canvas.style.opacity = String(1 - ramp(progress, 0.6, 0.66));
   const resized = resize();
   if (resized || Math.abs(tNow - tDrawn) > 0.0004) { frame(tNow); tDrawn = tNow; }
